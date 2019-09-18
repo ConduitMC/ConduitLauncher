@@ -1,0 +1,2 @@
+Main-Class: me.clutchy.launch.MainStart
+Launcher-Agent-Class: me.clutchy.launch.Agent
