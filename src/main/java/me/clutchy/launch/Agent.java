@@ -16,7 +16,7 @@ public class Agent {
         Agent.inst = inst;
     }
 
-    public static void addClassPath(File f) {
+    static void addClassPath(File f) {
         ClassLoader cl = ClassLoader.getSystemClassLoader();
         try {
             if (inst != null) {
@@ -27,7 +27,9 @@ public class Agent {
             m.setAccessible(true);
             m.invoke(cl, f.toURI().toURL());
         } catch (Throwable e) {
+            System.out.println("Add to classpath error!");
             e.printStackTrace();
+            System.exit(0);
         }
     }
 }

@@ -1,0 +1,51 @@
+{
+  "version": "1.14.4",
+  "minecraft": [
+    {
+      "type": "maven",
+      "groupId": "org.apache.commons",
+      "artifactId": "commons-lang3",
+      "version": "3.5"
+    },
+    {
+      "type": "maven",
+      "groupId": "it.unimi.dsi",
+      "artifactId": "fastutil",
+      "version": "8.2.1"
+    },
+    {
+      "type": "maven",
+      "groupId": "io.netty",
+      "artifactId": "netty-all",
+      "version": "4.1.25.Final"
+    },
+    {
+      "type": "maven",
+      "groupId": "com.mojang",
+      "artifactId": "authlib",
+      "version": "1.5.25",
+      "url": "https://libraries.minecraft.net/"
+    },
+    {
+      "type": "maven",
+      "groupId": "com.mojang",
+      "artifactId": "brigadier",
+      "version": "1.0.17",
+      "url": "https://libraries.minecraft.net/"
+    },
+    {
+      "type": "maven",
+      "groupId": "com.mojang",
+      "artifactId": "datafixerupper",
+      "version": "2.0.24",
+      "url": "https://libraries.minecraft.net/"
+    },
+    {
+      "type": "maven",
+      "groupId": "com.mojang",
+      "artifactId": "javabridge",
+      "version": "1.0.22",
+      "url": "https://libraries.minecraft.net/"
+    }
+  ]
+}

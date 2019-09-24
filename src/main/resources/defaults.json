@@ -1,0 +1,75 @@
+{
+  "base": [
+    {
+      "type": "maven",
+      "groupId": "org.ow2.asm",
+      "artifactId": "asm",
+      "version": "7.1"
+    },
+    {
+      "type": "maven",
+      "groupId": "org.ow2.asm",
+      "artifactId": "asm-commons",
+      "version": "7.1"
+    },
+    {
+      "type": "maven",
+      "groupId": "org.ow2.asm",
+      "artifactId": "asm-tree",
+      "version": "7.1"
+    },
+    {
+      "type": "maven",
+      "groupId": "org.ow2.asm",
+      "artifactId": "asm-util",
+      "version": "7.1"
+    },
+    {
+      "type": "maven",
+      "groupId": "commons-io",
+      "artifactId": "commons-io",
+      "version": "2.5"
+    },
+    {
+      "type": "maven",
+      "groupId": "com.google.guava",
+      "artifactId": "guava",
+      "version": "21.0"
+    },
+    {
+      "type": "maven",
+      "groupId": "net.sf.jopt-simple",
+      "artifactId": "jopt-simple",
+      "version": "5.0.3"
+    },
+    {
+      "type": "url",
+      "groupId": "io.github.lightwayup",
+      "artifactId": "launchwrapper",
+      "version": "1.13",
+      "url": "https://github.com/LightWayUp/LegacyLauncher/releases/download/v1.13-master/launchwrapper-1.13-master.jar"
+    },
+    {
+      "type": "maven",
+      "groupId": "net.md-5",
+      "artifactId": "SpecialSource",
+      "version": "1.8.5"
+    }
+  ],
+  "mixin": [
+    {
+      "type": "url",
+      "groupId": "org.spongepowered",
+      "artifactId": "mixin",
+      "version": "0.7.8-SNAPSHOT",
+      "url": "https://repo.spongepowered.org/maven/org/spongepowered/mixin/0.7.8-SNAPSHOT/mixin-0.7.8-20180418.114358-1.jar"
+    },
+    {
+      "type": "url",
+      "groupId": "me.clutchy",
+      "artifactId": "MixinTweaker",
+      "version": "1.0.0",
+      "url": "https://dl.dropboxusercontent.com/s/yzssed6bto1p688/MixinTweaker.jar"
+    }
+  ]
+}
