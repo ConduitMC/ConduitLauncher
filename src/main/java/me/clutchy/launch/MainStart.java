@@ -151,7 +151,7 @@ public class MainStart {
                     System.exit(0);
                 }
                 // Convert Minecraft mappings
-                logger.info("Converting Minecraft mappings (This make take a bit!)");
+                logger.info("Converting Minecraft mappings");
                 Mojang2Tsrg m2t = new Mojang2Tsrg();
                 File mappingsFile = Paths.get(".minecraft").resolve(serverMappings).toFile();
                 File mappingsConvertedFile = Paths.get(".minecraft").resolve(serverMappingsConverted).toFile();
@@ -165,6 +165,7 @@ public class MainStart {
                 }
                 mappingsFile.delete();
                 // Remapping Minecraft
+                logger.info("Remapping Minecraft (This make take a bit!)");
                 String[] specialSourceArgs = Stream.of(
                         "--in-jar", Paths.get(".minecraft").resolve(serverJar).toFile().getAbsolutePath(),
                         "--out-jar", Paths.get(".minecraft").resolve(serverFinalJar).toFile().getAbsolutePath(),
