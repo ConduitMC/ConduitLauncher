@@ -1,6 +1,6 @@
-package me.clutchy.launch.json.minecraft;
+package me.ifydev.launch.json.minecraft;
 
-import me.clutchy.launch.json.download.JsonDownloadType;
+import me.ifydev.launch.json.download.JsonDownloadType;
 
 import java.util.ArrayList;
 import java.util.List;

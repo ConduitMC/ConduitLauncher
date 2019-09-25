@@ -1,4 +1,4 @@
-package me.clutchy.launch.json.version;
+package me.ifydev.launch.json.version;
 
 public class JsonVersion {
 

@@ -1,4 +1,4 @@
-package me.clutchy.launch.json.mixins;
+package me.ifydev.launch.json.mixins;
 
 public class JsonMixin {
 

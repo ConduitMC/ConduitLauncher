@@ -1,4 +1,4 @@
-package me.clutchy.launch.json.download;
+package me.ifydev.launch.json.download;
 
 public class JsonDownloadType {
 

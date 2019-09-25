@@ -1,6 +1,6 @@
-package me.clutchy.launch;
+package me.ifydev.launch;
 
-import me.clutchy.launch.json.download.JsonDownloadType;
+import me.ifydev.launch.json.download.JsonDownloadType;
 import org.apache.logging.log4j.LogManager;
 
 import java.io.File;

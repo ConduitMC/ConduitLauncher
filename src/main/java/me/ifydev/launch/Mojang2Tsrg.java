@@ -1,4 +1,4 @@
-package me.clutchy.launch;
+package me.ifydev.launch;
 
 import java.io.*;
 import java.util.Arrays;

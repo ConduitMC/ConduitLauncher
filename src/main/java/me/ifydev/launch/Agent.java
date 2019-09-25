@@ -1,4 +1,4 @@
-package me.clutchy.launch;
+package me.ifydev.launch;
 
 import java.io.File;
 import java.lang.instrument.Instrumentation;

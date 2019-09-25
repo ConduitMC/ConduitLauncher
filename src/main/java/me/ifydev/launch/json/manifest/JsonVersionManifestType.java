@@ -1,4 +1,4 @@
-package me.clutchy.launch.json.manifest;
+package me.ifydev.launch.json.manifest;
 
 public class JsonVersionManifestType {
 

@@ -1,4 +1,4 @@
-package me.clutchy.launch.json.mixins;
+package me.ifydev.launch.json.mixins;
 
 import java.util.ArrayList;
 import java.util.List;
