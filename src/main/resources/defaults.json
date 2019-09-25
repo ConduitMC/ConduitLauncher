@@ -61,8 +61,8 @@
       "type": "url",
       "groupId": "org.spongepowered",
       "artifactId": "mixin",
-      "version": "0.7.8-SNAPSHOT",
-      "url": "https://repo.spongepowered.org/maven/org/spongepowered/mixin/0.7.8-SNAPSHOT/mixin-0.7.8-20180418.114358-1.jar"
+      "version": "0.8-preview",
+      "url": "https://dl.dropboxusercontent.com/s/6e3xhzpgj8ys3oh/mixin-0.8-preview-SNAPSHOT.jar"
     },
     {
       "type": "url",
