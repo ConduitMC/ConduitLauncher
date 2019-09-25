@@ -216,9 +216,11 @@ public class MainStart {
         if (!mixins.getMixins().isEmpty()) {
             for (JsonMixin mixin : mixins.getMixins()) {
                 try {
-                    logger.info("Downloading Minecraft mixin (" + mixin.getName() +")");
                     File file = Paths.get(".mixins").resolve(mixin.getName() + ".jar").toFile();
-                    downloadFile(new URL(mixin.getUrl()), file);
+                    if (!file.exists()) {
+                        logger.info("Downloading Minecraft mixin (" + mixin.getName() +")");
+                        downloadFile(new URL(mixin.getUrl()), file);
+                    }
                     logger.info("Loading Minecraft mixin (" + mixin.getName() +")");
                     Agent.addClassPath(file);
                     try {
