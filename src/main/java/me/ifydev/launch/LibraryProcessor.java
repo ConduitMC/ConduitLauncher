@@ -24,15 +24,13 @@ class LibraryProcessor {
             try {
                 Files.createDirectories(libraryPath.toPath());
                 File jar = new File(libraryPath, getFileName(library));
-                if (!jar.exists()) {
-                    if (library.getType() != null && library.getType().trim().equalsIgnoreCase("maven")) {
+                if (!jar.exists() && library.getType() != null) {
+                    if (library.getType().trim().equalsIgnoreCase("maven")) {
                         info(firstLaunch, "Downloading " + type + ": " + library.getArtifactId());
                         MainStart.downloadFile(getUrl(library), jar);
-                    } else {
-                        if (library.getType() == null || !library.getType().trim().equalsIgnoreCase("minecraft")) {
-                            info(firstLaunch, "Downloading " + type + ": " + library.getArtifactId());
-                            MainStart.downloadFile(new URL(library.getUrl()), jar);
-                        }
+                    } else if (!library.getType().trim().equalsIgnoreCase("minecraft")) {
+                        info(firstLaunch, "Downloading " + type + ": " + library.getArtifactId());
+                        MainStart.downloadFile(new URL(library.getUrl()), jar);
                     }
                 }
                 loadedLibraries.add(library.getArtifactId());

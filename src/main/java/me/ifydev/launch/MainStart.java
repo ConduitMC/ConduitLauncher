@@ -2,13 +2,13 @@ package me.ifydev.launch;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import me.ifydev.launch.json.mixins.JsonMixin;
-import me.ifydev.launch.json.mixins.JsonMixins;
 import me.ifydev.launch.json.download.JsonDefaults;
 import me.ifydev.launch.json.download.JsonDownloadType;
 import me.ifydev.launch.json.manifest.JsonVersionManifest;
 import me.ifydev.launch.json.manifest.JsonVersionManifestType;
 import me.ifydev.launch.json.minecraft.JsonMinecraft;
+import me.ifydev.launch.json.mixins.JsonMixin;
+import me.ifydev.launch.json.mixins.JsonMixins;
 import me.ifydev.launch.json.version.JsonVersion;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -217,21 +217,23 @@ public class MainStart {
             for (JsonMixin mixin : mixins.getMixins()) {
                 try {
                     File file = Paths.get(".mixins").resolve(mixin.getName() + ".jar").toFile();
-                    if (!file.exists()) {
+                    if (!file.exists() && mixin.getUrl() != null && !mixin.getUrl().trim().isEmpty()) {
                         logger.info("Downloading Minecraft mixin (" + mixin.getName() +")");
                         downloadFile(new URL(mixin.getUrl()), file);
                     }
-                    logger.info("Loading Minecraft mixin (" + mixin.getName() +")");
-                    Agent.addClassPath(file);
-                    try {
-                        libs.add(file.toURI().toURL().toString());
-                    } catch (MalformedURLException e) {
-                        logger.fatal("Unable to load Minecraft mixin (" + mixin.getName() + ")!");
-                        System.exit(0);
+                    if (file.exists()) {
+                        logger.info("Loading Minecraft mixin (" + mixin.getName() + ")");
+                        Agent.addClassPath(file);
+                        try {
+                            libs.add(file.toURI().toURL().toString());
+                        } catch (MalformedURLException e) {
+                            logger.fatal("Unable to load Minecraft mixin (" + mixin.getName() + ")!");
+                            System.exit(0);
+                        }
+                        logger.info("Loaded Minecraft mixin (" + mixin.getName() + ")");
                     }
-                    logger.info("Loaded Minecraft mixin (" + mixin.getName() +")");
                 } catch (IOException e) {
-                    logger.fatal("Error downloading mixin(" + mixin.getName() + ")!");
+                    logger.fatal("Error downloading mixin (" + mixin.getName() + ")!");
                     e.printStackTrace();
                     System.exit(0);
                 }

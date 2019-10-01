@@ -3,6 +3,10 @@
     {
       "name": "YeetServerEula",
       "url": "https://dl.dropboxusercontent.com/s/h5znk0ued7pja1z/YeetServerEula.jar"
+    },
+    {
+      "name": "ServerWrapper",
+      "url": ""
     }
   ]
 }
