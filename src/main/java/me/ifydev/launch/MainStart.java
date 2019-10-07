@@ -165,7 +165,7 @@ public class MainStart {
                 }
                 mappingsFile.delete();
                 // Remapping Minecraft
-                logger.info("Remapping Minecraft (This make take a bit!)");
+                logger.info("Remapping Minecraft (This might take a bit!)");
                 String[] specialSourceArgs = Stream.of(
                         "--in-jar", Paths.get(".minecraft").resolve(serverJar).toFile().getAbsolutePath(),
                         "--out-jar", Paths.get(".minecraft").resolve(serverFinalJar).toFile().getAbsolutePath(),
