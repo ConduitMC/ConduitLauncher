@@ -211,8 +211,14 @@ public class MainStart {
             System.exit(0);
         }
         // Make sure we have the correct directories
-        Paths.get(".mixins").toFile().mkdirs();
-        // Download and load Mixins
+
+        File mixinsFolder = Paths.get(".mixins").toFile();
+        if (!mixinsFolder.exists() && !mixinsFolder.mkdirs()) {
+            logger.error("Failed to make .mixins directory.");
+            return;
+        }
+
+        // Download and load forced Mixins
         if (!mixins.getMixins().isEmpty()) {
             for (JsonMixin mixin : mixins.getMixins()) {
                 try {
@@ -239,6 +245,33 @@ public class MainStart {
                 }
             }
         }
+
+        // Base mixins have been loaded. We can now get all the jars in the plugins folder and put them into the classpath for Conduit
+        // to load.
+        File pluginsFolder = Paths.get("plugins").toFile();
+        if (!pluginsFolder.exists() && !pluginsFolder.mkdirs()) {
+            logger.error("Failed to make plugins directory.");
+            return;
+        }
+
+        File[] pluginFiles = pluginsFolder.listFiles();
+        if (pluginFiles == null) return;
+
+        for (File file : pluginFiles) {
+            // Skip folders
+            if (!file.isFile()) continue;
+            // Make sure that it ends with .jar
+            if (!file.getName().endsWith(".jar")) continue;
+            // Since it is a file, and it ends with .jar, we can proceed with attempting to load it.
+            Agent.addClassPath(file);
+            try {
+                libs.add(file.toURI().toURL().toString());
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
+            logger.info("Loaded plugin: " + file.getName());
+        }
+
         // Start launchwrapper
         logger.info("Starting launchwrapper...");
         args = Stream.concat(Stream.of(libs.toString(), "--tweakClass", "me.ifydev.tweaker.MixinTweaker"), Arrays.stream(args)).toArray(String[]::new);
