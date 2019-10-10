@@ -1,4 +1,4 @@
-package me.ifydev.launch;
+package systems.conduit.launcher;
 
 import java.io.*;
 import java.util.Arrays;

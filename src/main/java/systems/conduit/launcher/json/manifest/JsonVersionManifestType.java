@@ -1,4 +1,4 @@
-package me.ifydev.launch.json.manifest;
+package systems.conduit.launcher.json.manifest;
 
 public class JsonVersionManifestType {
 

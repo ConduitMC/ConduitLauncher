@@ -1,4 +1,4 @@
-package me.ifydev.launch.json.mixins;
+package systems.conduit.launcher.json.mixins;
 
 public class JsonMixin {
 

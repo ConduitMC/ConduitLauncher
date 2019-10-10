@@ -1,15 +1,17 @@
-package me.ifydev.launch;
+package systems.conduit.launcher;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import me.ifydev.launch.json.download.JsonDefaults;
-import me.ifydev.launch.json.download.JsonDownloadType;
-import me.ifydev.launch.json.manifest.JsonVersionManifest;
-import me.ifydev.launch.json.manifest.JsonVersionManifestType;
-import me.ifydev.launch.json.minecraft.JsonMinecraft;
-import me.ifydev.launch.json.mixins.JsonMixin;
-import me.ifydev.launch.json.mixins.JsonMixins;
-import me.ifydev.launch.json.version.JsonVersion;
+
+import systems.conduit.launcher.json.download.JsonDefaults;
+import systems.conduit.launcher.json.download.JsonDownloadType;
+import systems.conduit.launcher.json.manifest.JsonVersionManifest;
+import systems.conduit.launcher.json.manifest.JsonVersionManifestType;
+import systems.conduit.launcher.json.minecraft.JsonMinecraft;
+import systems.conduit.launcher.json.mixins.JsonMixin;
+import systems.conduit.launcher.json.mixins.JsonMixins;
+import systems.conduit.launcher.json.version.JsonVersion;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -241,7 +243,7 @@ public class MainStart {
         }
         // Start launchwrapper
         logger.info("Starting launchwrapper...");
-        args = Stream.concat(Stream.of(libs.toString(), "--tweakClass", "me.ifydev.tweaker.MixinTweaker"), Arrays.stream(args)).toArray(String[]::new);
+        args = Stream.concat(Stream.of(libs.toString(), "--tweakClass", "systems.conduit.tweaker.MixinTweaker"), Arrays.stream(args)).toArray(String[]::new);
         try {
             Class<?> cls = Class.forName("net.minecraft.launchwrapper.Launch", true, ClassLoader.getSystemClassLoader());
             Method method = cls.getMethod("main", String[].class);

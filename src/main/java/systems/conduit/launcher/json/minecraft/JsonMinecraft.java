@@ -1,6 +1,6 @@
-package me.ifydev.launch.json.minecraft;
+package systems.conduit.launcher.json.minecraft;
 
-import me.ifydev.launch.json.download.JsonDownloadType;
+import systems.conduit.launcher.json.download.JsonDownloadType;
 
 import java.util.ArrayList;
 import java.util.List;

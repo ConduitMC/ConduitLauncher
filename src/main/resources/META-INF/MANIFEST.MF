@@ -1,2 +1,2 @@
-Main-Class: me.ifydev.launch.MainStart
-Launcher-Agent-Class: me.ifydev.launch.Agent
+Main-Class: systems.conduit.launcher.MainStart
+Launcher-Agent-Class: systems.conduit.launcher.Agent
