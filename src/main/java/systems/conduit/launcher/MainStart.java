@@ -247,18 +247,15 @@ public class MainStart {
                 }
             }
         }
-
-        // Base mixins have been loaded. We can now get all the jars in the plugins folder and put them into the classpath for Conduit
-        // to load.
+        // Base mixins have been loaded.
+        // We can now get all the jars in the plugins folder and put them into the classpath for Conduit to load.
         File pluginsFolder = Paths.get("plugins").toFile();
         if (!pluginsFolder.exists() && !pluginsFolder.mkdirs()) {
             logger.error("Failed to make plugins directory.");
             return;
         }
-
         File[] pluginFiles = pluginsFolder.listFiles();
         if (pluginFiles == null) return;
-
         for (File file : pluginFiles) {
             // Skip folders
             if (!file.isFile()) continue;
@@ -273,7 +270,6 @@ public class MainStart {
             }
             logger.info("Loaded plugin: " + file.getName());
         }
-
         // Start launchwrapper
         logger.info("Starting launchwrapper...");
         args = Stream.concat(Stream.of(libs.toString(), "--tweakClass", "systems.conduit.tweaker.MixinTweaker"), Arrays.stream(args)).toArray(String[]::new);
