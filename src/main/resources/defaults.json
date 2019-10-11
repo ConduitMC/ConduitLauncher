@@ -50,10 +50,11 @@
       "url": "https://github.com/LightWayUp/LegacyLauncher/releases/download/v1.13-master/launchwrapper-1.13-master.jar"
     },
     {
-      "type": "maven",
+      "type": "url",
       "groupId": "net.md-5",
       "artifactId": "SpecialSource",
-      "version": "1.8.5"
+      "version": "1.8.6",
+      "url": "https://dl.dropboxusercontent.com/s/o49pc793j4mevw3/SpecialSource-1.8.6.jar"
     },
     {
       "type": "maven",
