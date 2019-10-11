@@ -1,4 +1,4 @@
-package me.ifydev.launch.json.download;
+package systems.conduit.launcher.json.download;
 
 public class JsonDownloadType {
 

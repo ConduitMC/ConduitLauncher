@@ -1,4 +1,4 @@
-package me.ifydev.launch.json.version;
+package systems.conduit.launcher.json.version;
 
 public class JsonVersion {
 

@@ -1,6 +1,7 @@
-package me.ifydev.launch;
+package systems.conduit.launcher;
 
-import me.ifydev.launch.json.download.JsonDownloadType;
+import systems.conduit.launcher.json.download.JsonDownloadType;
+
 import org.apache.logging.log4j.LogManager;
 
 import java.io.File;
