@@ -15,13 +15,19 @@
     {
       "type": "maven",
       "groupId": "org.ow2.asm",
+      "artifactId": "asm-util",
+      "version": "7.1"
+    },
+    {
+      "type": "maven",
+      "groupId": "org.ow2.asm",
       "artifactId": "asm-tree",
       "version": "7.1"
     },
     {
       "type": "maven",
       "groupId": "org.ow2.asm",
-      "artifactId": "asm-util",
+      "artifactId": "asm-analysis",
       "version": "7.1"
     },
     {
@@ -75,7 +81,7 @@
       "groupId": "org.spongepowered",
       "artifactId": "mixin",
       "version": "0.8-preview",
-      "url": "https://dl.dropboxusercontent.com/s/6e3xhzpgj8ys3oh/mixin-0.8-preview-SNAPSHOT.jar"
+      "url": "https://dl.dropboxusercontent.com/s/osybvylw5tqqzd6/mixin-0.8-preview.jar"
     },
     {
       "type": "url",

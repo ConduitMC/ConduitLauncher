@@ -213,13 +213,11 @@ public class MainStart {
             System.exit(0);
         }
         // Make sure we have the correct directories
-
         File mixinsFolder = Paths.get(".mixins").toFile();
         if (!mixinsFolder.exists() && !mixinsFolder.mkdirs()) {
             logger.error("Failed to make .mixins directory.");
             return;
         }
-
         // Download and load forced Mixins
         if (!mixins.getMixins().isEmpty()) {
             for (JsonMixin mixin : mixins.getMixins()) {
