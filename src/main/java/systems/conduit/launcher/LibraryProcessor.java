@@ -16,9 +16,9 @@ class LibraryProcessor {
 
     private static final String DEFAULT_REPO = "http://repo.maven.apache.org/maven2/";
 
-    static List<String> downloadLibrary(String type, boolean firstLaunch, Path path, List<JsonDownloadType> libraries) {
+    static List<URL> downloadLibrary(String type, boolean firstLaunch, Path path, List<JsonDownloadType> libraries) {
         info(firstLaunch, "Loading " + type);
-        List<String> loadedJars = new ArrayList<>();
+        List<URL> loadedJars = new ArrayList<>();
         List<String> loadedLibraries = new ArrayList<>();
         for (JsonDownloadType library : libraries) {
             File libraryPath = new File(path.toFile() + File.separator + getPath(library));
@@ -35,7 +35,7 @@ class LibraryProcessor {
                     }
                 }
                 loadedLibraries.add(library.getArtifactId());
-                loadedJars.add(jar.toURI().toURL().toString());
+                loadedJars.add(jar.toURI().toURL());
                 Agent.addClassPath(jar);
             } catch (Exception e) {
                 error(firstLaunch, "Error loading " + type + ": " + library.getArtifactId());
