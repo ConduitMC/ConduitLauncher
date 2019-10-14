@@ -28,11 +28,6 @@
             <artifactId>launchwrapper</artifactId>
             <version>1.13</version>
         </dependency>
-        <dependency>
-            <groupId>org.spongepowered</groupId>
-            <artifactId>mixin</artifactId>
-            <version>0.7.8-SNAPSHOT</version>
-        </dependency>
     </dependencies>
 
     <build>

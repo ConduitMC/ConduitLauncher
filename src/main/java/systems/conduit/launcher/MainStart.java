@@ -230,7 +230,6 @@ public class MainStart {
                     }
                     if (file.exists()) {
                         logger.info("Loading Minecraft mixin (" + mixin.getName() + ")");
-                        // TODO TEST
                         Launch.classLoader.addURL(file.toURI().toURL());
                         logger.info("Loaded Minecraft mixin (" + mixin.getName() + ")");
                     }
