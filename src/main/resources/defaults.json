@@ -15,13 +15,19 @@
     {
       "type": "maven",
       "groupId": "org.ow2.asm",
+      "artifactId": "asm-util",
+      "version": "7.1"
+    },
+    {
+      "type": "maven",
+      "groupId": "org.ow2.asm",
       "artifactId": "asm-tree",
       "version": "7.1"
     },
     {
       "type": "maven",
       "groupId": "org.ow2.asm",
-      "artifactId": "asm-util",
+      "artifactId": "asm-analysis",
       "version": "7.1"
     },
     {
@@ -47,13 +53,26 @@
       "groupId": "io.github.lightwayup",
       "artifactId": "launchwrapper",
       "version": "1.13",
-      "url": "https://github.com/LightWayUp/LegacyLauncher/releases/download/v1.13-master/launchwrapper-1.13-master.jar"
+      "url": "https://dl.dropboxusercontent.com/s/p4mgbdcztdwhfib/launchwrapper-1.13.jar"
+    },
+    {
+      "type": "url",
+      "groupId": "net.md-5",
+      "artifactId": "SpecialSource",
+      "version": "1.8.6",
+      "url": "https://dl.dropboxusercontent.com/s/o49pc793j4mevw3/SpecialSource-1.8.6.jar"
     },
     {
       "type": "maven",
-      "groupId": "net.md-5",
-      "artifactId": "SpecialSource",
-      "version": "1.8.5"
+      "groupId": "org.javassist",
+      "artifactId": "javassist",
+      "version": "3.21.0-GA"
+    },
+    {
+      "type": "maven",
+      "groupId": "org.reflections",
+      "artifactId": "reflections",
+      "version": "0.9.11"
     }
   ],
   "mixin": [
@@ -62,7 +81,7 @@
       "groupId": "org.spongepowered",
       "artifactId": "mixin",
       "version": "0.8-preview",
-      "url": "https://dl.dropboxusercontent.com/s/6e3xhzpgj8ys3oh/mixin-0.8-preview-SNAPSHOT.jar"
+      "url": "https://dl.dropboxusercontent.com/s/osybvylw5tqqzd6/mixin-0.8-preview.jar"
     },
     {
       "type": "url",

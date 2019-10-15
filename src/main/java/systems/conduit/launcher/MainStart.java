@@ -2,7 +2,9 @@ package systems.conduit.launcher;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-
+import net.minecraft.launchwrapper.Launch;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import systems.conduit.launcher.json.download.JsonDefaults;
 import systems.conduit.launcher.json.download.JsonDownloadType;
 import systems.conduit.launcher.json.manifest.JsonVersionManifest;
@@ -11,9 +13,6 @@ import systems.conduit.launcher.json.minecraft.JsonMinecraft;
 import systems.conduit.launcher.json.mixins.JsonMixin;
 import systems.conduit.launcher.json.mixins.JsonMixins;
 import systems.conduit.launcher.json.version.JsonVersion;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
@@ -35,7 +34,7 @@ public class MainStart {
     public static void main(String[] args) {
         System.out.println("Starting launcher...");
         // Load logger libraries
-        List<String> libs = LibraryProcessor.downloadLibrary("logger libraries", true, Paths.get(".libs", "base"), Arrays.asList(
+        List<URL> libs = LibraryProcessor.downloadLibrary("logger libraries", true, Paths.get(".libs", "base"), Arrays.asList(
                 new JsonDownloadType("maven", "org.apache.logging.log4j", "log4j-api", "2.8.1", ""),
                 new JsonDownloadType("maven", "org.apache.logging.log4j", "log4j-core", "2.8.1", "")
         ));
@@ -56,6 +55,8 @@ public class MainStart {
         }
         // Download all the base libraries
         libs.addAll(LibraryProcessor.downloadLibrary("base libraries", false, Paths.get(".libs", "base"), defaults.getBase()));
+        // Start default classloader for legacylauncher
+        Launch launch = new Launch();
         // Download all the mixin libraries
         libs.addAll(LibraryProcessor.downloadLibrary("mixin libraries", false, Paths.get(".libs", "mixin"), defaults.getMixin()));
         // Add Minecraft json if does not exist
@@ -81,6 +82,8 @@ public class MainStart {
         }
         // Download all the Minecraft libraries
         libs.addAll(LibraryProcessor.downloadLibrary("Minecraft libraries", false, Paths.get(".minecraft", ".libs"), minecraft.getMinecraft()));
+        // Load all the libraries
+        libs.forEach(Launch.classLoader::addURL);
         // Minecraft info
         String minecraftVersion = minecraft.getVersion();
         String serverJar = "server-" + minecraftVersion + ".jar";
@@ -194,12 +197,10 @@ public class MainStart {
         // Load Minecraft
         logger.info("Loading Minecraft remapped");
         File minecraftServer = Paths.get(".minecraft").resolve(serverFinalJar).toFile();
-        Agent.addClassPath(minecraftServer);
         try {
-            libs.add(minecraftServer.toURI().toURL().toString());
+            Launch.classLoader.addURL(minecraftServer.toURI().toURL());
         } catch (MalformedURLException e) {
-            logger.fatal("Unable to load Minecraft server!");
-            System.exit(0);
+            e.printStackTrace();
         }
         logger.info("Loaded Minecraft remapped");
         // Load mixins json
@@ -213,26 +214,19 @@ public class MainStart {
             System.exit(0);
         }
         // Make sure we have the correct directories
-        Paths.get(".mixins").toFile().mkdirs();
-        // Download and load Mixins
+        File mixinsFolder = Paths.get(".mixins").toFile();
+        if (!mixinsFolder.exists() && !mixinsFolder.mkdirs()) {
+            logger.error("Failed to make .mixins directory.");
+            return;
+        }
+        // Download Mixins
         if (!mixins.getMixins().isEmpty()) {
             for (JsonMixin mixin : mixins.getMixins()) {
                 try {
                     File file = Paths.get(".mixins").resolve(mixin.getName() + ".jar").toFile();
                     if (!file.exists() && mixin.getUrl() != null && !mixin.getUrl().trim().isEmpty()) {
-                        logger.info("Downloading Minecraft mixin (" + mixin.getName() +")");
+                        logger.info("Downloading mixin (" + mixin.getName() +")");
                         downloadFile(new URL(mixin.getUrl()), file);
-                    }
-                    if (file.exists()) {
-                        logger.info("Loading Minecraft mixin (" + mixin.getName() + ")");
-                        Agent.addClassPath(file);
-                        try {
-                            libs.add(file.toURI().toURL().toString());
-                        } catch (MalformedURLException e) {
-                            logger.fatal("Unable to load Minecraft mixin (" + mixin.getName() + ")!");
-                            System.exit(0);
-                        }
-                        logger.info("Loaded Minecraft mixin (" + mixin.getName() + ")");
                     }
                 } catch (IOException e) {
                     logger.fatal("Error downloading mixin (" + mixin.getName() + ")!");
@@ -241,18 +235,27 @@ public class MainStart {
                 }
             }
         }
+        // Load Mixins
+        File[] mixinFiles = mixinsFolder.listFiles();
+        if (mixinFiles == null) return;
+        for (File file : mixinFiles) {
+            // Skip folders
+            if (!file.isFile()) continue;
+            // Make sure that it ends with .jar
+            if (!file.getName().endsWith(".jar")) continue;
+            // Since it is a file, and it ends with .jar, we can proceed with attempting to load it.
+            try{
+                Launch.classLoader.addURL(file.toURI().toURL());
+            } catch (IOException e) {
+                logger.fatal("Error loading mixin (" + file.getName() + ")!");
+                e.printStackTrace();
+                System.exit(0);
+            }
+            logger.info("Loaded mixin: " + file.getName());
+        }
         // Start launchwrapper
         logger.info("Starting launchwrapper...");
-        args = Stream.concat(Stream.of(libs.toString(), "--tweakClass", "systems.conduit.tweaker.MixinTweaker"), Arrays.stream(args)).toArray(String[]::new);
-        try {
-            Class<?> cls = Class.forName("net.minecraft.launchwrapper.Launch", true, ClassLoader.getSystemClassLoader());
-            Method method = cls.getMethod("main", String[].class);
-            method.invoke(null, (Object) args);
-        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | ClassNotFoundException e) {
-            logger.fatal("Problems launching Minecraft! Closing...");
-            e.printStackTrace();
-            System.exit(0);
-        }
+        launch.launch(Stream.concat(Stream.of("--tweakClass", "systems.conduit.tweaker.MixinTweaker"), Arrays.stream(args)).toArray(String[]::new));
     }
 
     private static Optional<JsonVersionManifestType> getVersion(JsonVersionManifest manifest, String version) {
