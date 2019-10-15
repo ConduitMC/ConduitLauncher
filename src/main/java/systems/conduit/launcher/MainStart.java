@@ -219,19 +219,14 @@ public class MainStart {
             logger.error("Failed to make .mixins directory.");
             return;
         }
-        // Download and load Mixins
+        // Download Mixins
         if (!mixins.getMixins().isEmpty()) {
             for (JsonMixin mixin : mixins.getMixins()) {
                 try {
                     File file = Paths.get(".mixins").resolve(mixin.getName() + ".jar").toFile();
                     if (!file.exists() && mixin.getUrl() != null && !mixin.getUrl().trim().isEmpty()) {
-                        logger.info("Downloading Minecraft mixin (" + mixin.getName() +")");
+                        logger.info("Downloading mixin (" + mixin.getName() +")");
                         downloadFile(new URL(mixin.getUrl()), file);
-                    }
-                    if (file.exists()) {
-                        logger.info("Loading Minecraft mixin (" + mixin.getName() + ")");
-                        Launch.classLoader.addURL(file.toURI().toURL());
-                        logger.info("Loaded Minecraft mixin (" + mixin.getName() + ")");
                     }
                 } catch (IOException e) {
                     logger.fatal("Error downloading mixin (" + mixin.getName() + ")!");
@@ -239,6 +234,24 @@ public class MainStart {
                     System.exit(0);
                 }
             }
+        }
+        // Load Mixins
+        File[] mixinFiles = mixinsFolder.listFiles();
+        if (mixinFiles == null) return;
+        for (File file : mixinFiles) {
+            // Skip folders
+            if (!file.isFile()) continue;
+            // Make sure that it ends with .jar
+            if (!file.getName().endsWith(".jar")) continue;
+            // Since it is a file, and it ends with .jar, we can proceed with attempting to load it.
+            try{
+                Launch.classLoader.addURL(file.toURI().toURL());
+            } catch (IOException e) {
+                logger.fatal("Error loading mixin (" + file.getName() + ")!");
+                e.printStackTrace();
+                System.exit(0);
+            }
+            logger.info("Loaded mixin: " + file.getName());
         }
         // Start launchwrapper
         logger.info("Starting launchwrapper...");
