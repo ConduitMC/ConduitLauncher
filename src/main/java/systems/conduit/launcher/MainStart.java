@@ -194,6 +194,93 @@ public class MainStart {
                 System.exit(0);
             }
         }
+        // Dev install if we can
+        if (args.length >= 1) {
+            if (Arrays.asList(args).contains("dev")) {
+                logger.info("Dev mode started");
+                // Make sure we have the correct directories
+                if (!Paths.get(".minecraft", ".dev").toFile().exists()) {
+                    logger.info("Creating dev directory and files");
+                    Paths.get(".minecraft", ".dev").toFile().mkdirs();
+                }
+                // Create our files
+                Path launchWrapperPomFile = Paths.get(".minecraft", ".dev").resolve("launchwrapper-dev.pom");
+                Path minecraftPomFile = Paths.get(".minecraft", ".dev").resolve("minecraft-dev.pom");
+                // Check if windows
+                String baseInstallCommand = "mvn ";
+                if (System.getProperty("os.name").toLowerCase().contains("win")) {
+                    baseInstallCommand = "cmd.exe /c " + baseInstallCommand;
+                }
+                // Save poms if does not exist
+                // Launchwrapper pom saving
+                if (!launchWrapperPomFile.toFile().exists()) {
+                    try (InputStream inputStream = MainStart.class.getResourceAsStream("/launchwrapper-dev.pom")) {
+                        Files.copy(inputStream, launchWrapperPomFile, StandardCopyOption.REPLACE_EXISTING);
+                    } catch (IOException e) {
+                        logger.fatal("Error copying launchwrapper pom!");
+                        e.printStackTrace();
+                        System.exit(0);
+                    }
+                }
+                // Minecraft pom saving
+                if (!minecraftPomFile.toFile().exists()) {
+                    try (InputStream inputStream = MainStart.class.getResourceAsStream("/minecraft-dev.pom")) {
+                        Files.copy(inputStream, minecraftPomFile, StandardCopyOption.REPLACE_EXISTING);
+                    } catch (IOException e) {
+                        logger.fatal("Error copying minecraft pom!");
+                        e.printStackTrace();
+                        System.exit(0);
+                    }
+                }
+                logger.info("Replacing minecraft version in pom");
+                // Replace minecraft version in pom
+                try {
+                    String content = new String(Files.readAllBytes(minecraftPomFile), StandardCharsets.UTF_8);
+                    content = content.replaceAll("\\$\\{minecraft-version}", minecraftVersion);
+                    Files.write(minecraftPomFile, content.getBytes(StandardCharsets.UTF_8));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                // Install Launchwrapper to maven
+                logger.info("Installing launchwrapper to maven");
+                try {
+                    String dFile = "-Dfile=" + Paths.get(".libs", "base", "io", "github", "lightwayup", "launchwrapper", "1.13").resolve("launchwrapper-1.13.jar").toString();
+                    String pomFile = "-DpomFile=" +  launchWrapperPomFile.toString();
+                    Process p = Runtime.getRuntime().exec(baseInstallCommand +"install:install-file " + dFile + " " + pomFile);
+                    String line;
+                    BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()));
+                    while ((line = in.readLine()) != null) {
+                        System.out.println(line);
+                    }
+                    in.close();
+                } catch (IOException e) {
+                    logger.fatal("Error with maven install for launchwrapper!");
+                    e.printStackTrace();
+                    System.exit(0);
+                }
+                // Install Minecraft to maven
+                logger.info("Installing minecraft to maven");
+                try {
+                    String dFile = "-Dfile=" + Paths.get(".minecraft").resolve(serverFinalJar).toString();
+                    String pomFile = "-DpomFile=" +  minecraftPomFile.toString();
+                    Process p = Runtime.getRuntime().exec(baseInstallCommand + " install:install-file " + dFile + " " + pomFile);
+                    String line;
+                    BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()));
+                    while ((line = in.readLine()) != null) {
+                        System.out.println(line);
+                    }
+                    in.close();
+                } catch (IOException e) {
+                    logger.fatal("Error with maven install for launchwrapper!");
+                    e.printStackTrace();
+                    System.exit(0);
+                }
+                logger.info("Done with dev install!");
+                logger.info("To start your server normally remove the dev argument!");
+                System.exit(0);
+                return;
+            }
+        }
         // Load Minecraft
         logger.info("Loading Minecraft remapped");
         File minecraftServer = Paths.get(".minecraft").resolve(serverFinalJar).toFile();
