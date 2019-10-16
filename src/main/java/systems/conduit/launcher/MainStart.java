@@ -194,6 +194,12 @@ public class MainStart {
                 System.exit(0);
             }
         }
+        // Create the mixins folder
+        File mixinsFolder = Paths.get(".mixins").toFile();
+        if (!mixinsFolder.exists() && !mixinsFolder.mkdirs()) {
+            logger.error("Failed to make .mixins directory.");
+            return;
+        }
         // Dev install if we can
         if (args.length >= 1) {
             if (Arrays.asList(args).contains("dev")) {
@@ -299,12 +305,6 @@ public class MainStart {
             logger.fatal("Error reading mixins json!");
             e.printStackTrace();
             System.exit(0);
-        }
-        // Make sure we have the correct directories
-        File mixinsFolder = Paths.get(".mixins").toFile();
-        if (!mixinsFolder.exists() && !mixinsFolder.mkdirs()) {
-            logger.error("Failed to make .mixins directory.");
-            return;
         }
         // Download Mixins
         if (!mixins.getMixins().isEmpty()) {
