@@ -73,6 +73,12 @@
       "groupId": "org.reflections",
       "artifactId": "reflections",
       "version": "0.9.11"
+    },
+    {
+      "type": "maven",
+      "groupId": "org.jline",
+      "artifactId": "jline",
+      "version": "3.13.0"
     }
   ],
   "mixin": [
