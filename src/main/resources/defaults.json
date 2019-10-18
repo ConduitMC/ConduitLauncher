@@ -73,12 +73,6 @@
       "groupId": "org.reflections",
       "artifactId": "reflections",
       "version": "0.9.11"
-    },
-    {
-      "type": "maven",
-      "groupId": "org.fusesource.jansi",
-      "artifactId": "jansi",
-      "version": "1.18"
     }
   ],
   "mixin": [
