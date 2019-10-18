@@ -73,6 +73,24 @@
       "groupId": "org.reflections",
       "artifactId": "reflections",
       "version": "0.9.11"
+    },
+    {
+      "type": "maven",
+      "groupId": "com.fasterxml.jackson.core",
+      "artifactId": "jackson-core",
+      "version": "2.9.8"
+    },
+    {
+      "type": "maven",
+      "groupId": "com.fasterxml.jackson.core",
+      "artifactId": "jackson-annotations",
+      "version": "2.9.8"
+    },
+    {
+      "type": "maven",
+      "groupId": "com.fasterxml.jackson.core",
+      "artifactId": "jackson-databind",
+      "version": "2.9.8"
     }
   ],
   "mixin": [
