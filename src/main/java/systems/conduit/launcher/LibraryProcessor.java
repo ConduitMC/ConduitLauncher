@@ -1,14 +1,13 @@
 package systems.conduit.launcher;
 
-import systems.conduit.launcher.json.download.JsonDownloadType;
-
 import org.apache.logging.log4j.LogManager;
+import systems.conduit.launcher.json.download.JsonDownloadType;
 
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Files;
-import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,12 +15,12 @@ class LibraryProcessor {
 
     private static final String DEFAULT_REPO = "http://repo.maven.apache.org/maven2/";
 
-    static List<URL> downloadLibrary(String type, boolean firstLaunch, Path path, List<JsonDownloadType> libraries) {
+    static List<URL> downloadLibrary(String type, boolean firstLaunch, List<JsonDownloadType> libraries) {
         info(firstLaunch, "Loading " + type);
         List<URL> loadedJars = new ArrayList<>();
         List<String> loadedLibraries = new ArrayList<>();
         for (JsonDownloadType library : libraries) {
-            File libraryPath = new File(path.toFile() + File.separator + getPath(library));
+            File libraryPath = new File(Paths.get(".libs").toFile() + File.separator + getPath(library));
             try {
                 Files.createDirectories(libraryPath.toPath());
                 File jar = new File(libraryPath, getFileName(library));

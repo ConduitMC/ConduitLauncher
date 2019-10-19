@@ -5,8 +5,8 @@ import com.google.gson.GsonBuilder;
 import net.minecraft.launchwrapper.Launch;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import systems.conduit.launcher.json.download.JsonDefaults;
 import systems.conduit.launcher.json.download.JsonDownloadType;
+import systems.conduit.launcher.json.download.JsonLibraries;
 import systems.conduit.launcher.json.manifest.JsonVersionManifest;
 import systems.conduit.launcher.json.manifest.JsonVersionManifestType;
 import systems.conduit.launcher.json.minecraft.JsonMinecraft;
@@ -26,7 +26,9 @@ import java.nio.file.FileSystem;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.*;
+import java.util.jar.JarFile;
 import java.util.stream.Stream;
+import java.util.zip.ZipEntry;
 
 public class MainStart {
 
@@ -35,31 +37,29 @@ public class MainStart {
     public static void main(String[] args) {
         System.out.println("Starting launcher...");
         // Load logger libraries
-        List<URL> libs = LibraryProcessor.downloadLibrary("logger libraries", true, Paths.get(".libs", "base"), Arrays.asList(
+        List<URL> libs = LibraryProcessor.downloadLibrary("logger libraries", true, Arrays.asList(
                 new JsonDownloadType("maven", "org.apache.logging.log4j", "log4j-api", "2.8.1", ""),
                 new JsonDownloadType("maven", "org.apache.logging.log4j", "log4j-core", "2.8.1", "")
         ));
         Logger logger = LogManager.getLogger("Launcher");
         // Load json library
-        libs.addAll(LibraryProcessor.downloadLibrary("json library", false, Paths.get(".libs", "base"), Collections.singletonList(
+        libs.addAll(LibraryProcessor.downloadLibrary("json library", false, Collections.singletonList(
                 new JsonDownloadType("maven", "com.google.code.gson", "gson", "2.8.0", "")
         )));
-        // Load base libraries from json to class
-        JsonDefaults defaults = new JsonDefaults();
+        // Load default libraries from json to class
+        JsonLibraries defaults = new JsonLibraries();
         try (Reader reader = new InputStreamReader(MainStart.class.getResourceAsStream("/defaults.json"), StandardCharsets.UTF_8)) {
             Gson gson = new GsonBuilder().create();
-            defaults = gson.fromJson(reader, JsonDefaults.class);
+            defaults = gson.fromJson(reader, JsonLibraries.class);
         } catch (IOException e) {
-            logger.fatal("Error reading base libraries json!");
+            logger.fatal("Error reading default libraries json!");
             e.printStackTrace();
             System.exit(0);
         }
-        // Download all the base libraries
-        libs.addAll(LibraryProcessor.downloadLibrary("base libraries", false, Paths.get(".libs", "base"), defaults.getBase()));
+        // Download all the default libraries
+        libs.addAll(LibraryProcessor.downloadLibrary("default libraries", false, defaults.getLibs()));
         // Start default classloader for legacylauncher
         Launch launch = new Launch();
-        // Download all the mixin libraries
-        libs.addAll(LibraryProcessor.downloadLibrary("mixin libraries", false, Paths.get(".libs", "mixin"), defaults.getMixin()));
         // Add Minecraft json if does not exist
         Path minecraftJsonFile = Paths.get("minecraft.json");
         if (!minecraftJsonFile.toFile().exists()) {
@@ -82,7 +82,7 @@ public class MainStart {
             System.exit(0);
         }
         // Download all the Minecraft libraries
-        libs.addAll(LibraryProcessor.downloadLibrary("Minecraft libraries", false, Paths.get(".minecraft", ".libs"), minecraft.getMinecraft()));
+        libs.addAll(LibraryProcessor.downloadLibrary("Minecraft libraries", false, minecraft.getMinecraft()));
         // Load all the libraries
         libs.forEach(Launch.classLoader::addURL);
         // Minecraft info
@@ -221,7 +221,7 @@ public class MainStart {
                 // Replace jar location in pom
                 try {
                     String content = new String(Files.readAllBytes(launchWrapperGradleFile), StandardCharsets.UTF_8);
-                    content = content.replace("jar-location", Paths.get(".libs", "base", "io", "github", "lightwayup", "launchwrapper", "1.13").resolve("launchwrapper-1.13.jar").toAbsolutePath().toString().replaceAll("\\\\", "\\\\\\\\"));
+                    content = content.replace("jar-location", Paths.get(".libs", "io", "github", "lightwayup", "launchwrapper", "1.13").resolve("launchwrapper-1.13.jar").toAbsolutePath().toString().replaceAll("\\\\", "\\\\\\\\"));
                     Files.write(launchWrapperGradleFile, content.getBytes(StandardCharsets.UTF_8));
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -322,14 +322,31 @@ public class MainStart {
             // Make sure that it ends with .jar
             if (!file.getName().endsWith(".jar")) continue;
             // Since it is a file, and it ends with .jar, we can proceed with attempting to load it.
+            String properFileName = file.getName().substring(0, file.getName().length() - 4);
             try{
+                // Get jar file
+                JarFile jarFile = new JarFile(file);
+                // Load libraries from json
+                ZipEntry libZip = jarFile.getEntry("libraries.json");
+                if (libZip != null) {
+                    logger.info("Found libraries.json: " + properFileName);
+                    try (Reader reader = new InputStreamReader(jarFile.getInputStream(libZip))) {
+                        Gson gson = new GsonBuilder().create();
+                        JsonLibraries libraries = gson.fromJson(reader, JsonLibraries.class);
+                        logger.info("Loading libraries.json: " + properFileName);
+                        List<URL> mixinLibs = LibraryProcessor.downloadLibrary(properFileName + " libraries", false, libraries.getLibs());
+                        // Load all the libraries
+                        mixinLibs.forEach(Launch.classLoader::addURL);
+                    }
+                }
+                // Add to class loader
                 Launch.classLoader.addURL(file.toURI().toURL());
             } catch (IOException e) {
-                logger.fatal("Error loading mixin (" + file.getName() + ")!");
+                logger.fatal("Error loading mixin (" + properFileName + ")!");
                 e.printStackTrace();
                 System.exit(0);
             }
-            logger.info("Loaded mixin: " + file.getName());
+            logger.info("Loaded mixin: " + properFileName);
         }
         // Start launchwrapper
         logger.info("Starting launchwrapper...");

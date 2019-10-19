@@ -1,6 +1,6 @@
 {
   "version": "1.14.4",
-  "minecraft": [
+  "libs": [
     {
       "type": "maven",
       "groupId": "org.apache.commons",
