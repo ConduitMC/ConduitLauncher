@@ -19,6 +19,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystem;
@@ -194,90 +195,74 @@ public class MainStart {
                 System.exit(0);
             }
         }
-        // Create the mixins folder
-        File mixinsFolder = Paths.get(".mixins").toFile();
-        if (!mixinsFolder.exists() && !mixinsFolder.mkdirs()) {
-            logger.error("Failed to make .mixins directory.");
-            return;
-        }
         // Dev install if we can
         if (args.length >= 1) {
             if (Arrays.asList(args).contains("dev")) {
                 logger.info("Dev mode started");
-                // Make sure we have the correct directories
-                if (!Paths.get(".minecraft", ".dev").toFile().exists()) {
-                    logger.info("Creating dev directory and files");
-                    Paths.get(".minecraft", ".dev").toFile().mkdirs();
-                }
                 // Create our files
-                Path launchWrapperPomFile = Paths.get(".minecraft", ".dev").resolve("launchwrapper-dev.pom");
-                Path minecraftPomFile = Paths.get(".minecraft", ".dev").resolve("minecraft-dev.pom");
-                // Check if windows
-                String baseInstallCommand = "mvn ";
-                if (System.getProperty("os.name").toLowerCase().contains("win")) {
-                    baseInstallCommand = "cmd.exe /c " + baseInstallCommand;
+                Path launchWrapperGradleFile = Paths.get(".minecraft", ".dev", "launchwrapper").resolve("build.gradle");
+                Path minecraftGradleFile = Paths.get(".minecraft", ".dev", "minecraft").resolve("build.gradle");
+                // Create base command
+                String baseInstallCommand = (System.getProperty("os.name").toLowerCase().contains("win") ? "cmd.exe /c gradlew.bat " : "./gradlew ");
+                // Extract dev folder
+                if (Paths.get(".minecraft", ".dev").toFile().exists()) {
+                    // Make sure we have the correct directories
+                    logger.info("Deleting current dev directory");
+                    deleteFolder(Paths.get(".minecraft", ".dev").toFile());
                 }
-                // Save poms if does not exist
-                // Launchwrapper pom saving
-                if (!launchWrapperPomFile.toFile().exists()) {
-                    try (InputStream inputStream = MainStart.class.getResourceAsStream("/launchwrapper-dev.pom")) {
-                        Files.copy(inputStream, launchWrapperPomFile, StandardCopyOption.REPLACE_EXISTING);
-                    } catch (IOException e) {
-                        logger.fatal("Error copying launchwrapper pom!");
-                        e.printStackTrace();
-                        System.exit(0);
-                    }
-                }
-                // Minecraft pom saving
-                if (!minecraftPomFile.toFile().exists()) {
-                    try (InputStream inputStream = MainStart.class.getResourceAsStream("/minecraft-dev.pom")) {
-                        Files.copy(inputStream, minecraftPomFile, StandardCopyOption.REPLACE_EXISTING);
-                    } catch (IOException e) {
-                        logger.fatal("Error copying minecraft pom!");
-                        e.printStackTrace();
-                        System.exit(0);
-                    }
-                }
-                logger.info("Replacing minecraft version in pom");
-                // Replace minecraft version in pom
                 try {
-                    String content = new String(Files.readAllBytes(minecraftPomFile), StandardCharsets.UTF_8);
-                    content = content.replaceAll("\\$\\{minecraft-version}", minecraftVersion);
-                    Files.write(minecraftPomFile, content.getBytes(StandardCharsets.UTF_8));
+                    // Make sure we have the correct directories
+                    logger.info("Copying dev directory");
+                    copyFromJar(".dev", Paths.get(".minecraft", ".dev").toAbsolutePath());
+                } catch (URISyntaxException | IOException e) {
+                    e.printStackTrace();
+                }
+                logger.info("Replacing launchwrapper jar in gradle.build");
+                // Replace jar location in pom
+                try {
+                    String content = new String(Files.readAllBytes(launchWrapperGradleFile), StandardCharsets.UTF_8);
+                    content = content.replace("jar-location", Paths.get(".libs", "base", "io", "github", "lightwayup", "launchwrapper", "1.13").resolve("launchwrapper-1.13.jar").toAbsolutePath().toString().replaceAll("\\\\", "\\\\\\\\"));
+                    Files.write(launchWrapperGradleFile, content.getBytes(StandardCharsets.UTF_8));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                logger.info("Replacing minecraft version and jar in gradle.build");
+                // Replace minecraft version and jar location in pom
+                try {
+                    String content = new String(Files.readAllBytes(minecraftGradleFile), StandardCharsets.UTF_8);
+                    content = content.replace("minecraft-version", minecraftVersion);
+                    content = content.replace("jar-location", Paths.get(".minecraft").resolve(serverFinalJar).toAbsolutePath().toString().replaceAll("\\\\", "\\\\\\\\"));
+                    Files.write(minecraftGradleFile, content.getBytes(StandardCharsets.UTF_8));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
                 // Install Launchwrapper to maven
-                logger.info("Installing launchwrapper to maven");
+                logger.info("Installing launchwrapper");
                 try {
-                    String dFile = "-Dfile=" + Paths.get(".libs", "base", "io", "github", "lightwayup", "launchwrapper", "1.13").resolve("launchwrapper-1.13.jar").toString();
-                    String pomFile = "-DpomFile=" +  launchWrapperPomFile.toString();
-                    Process p = Runtime.getRuntime().exec(baseInstallCommand +"install:install-file " + dFile + " " + pomFile);
+                    Process p = Runtime.getRuntime().exec(baseInstallCommand + "uploadResultArchives --warning-mode=none -p launchwrapper", null, Paths.get(".minecraft",".dev").toFile());
                     String line;
-                    BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()));
-                    while ((line = in.readLine()) != null) {
+                    BufferedReader input = new BufferedReader(new InputStreamReader(p.getInputStream()));
+                    while ((line = input.readLine()) != null) {
                         System.out.println(line);
                     }
-                    in.close();
+                    input.close();
                 } catch (IOException e) {
-                    logger.fatal("Error with maven install for launchwrapper!");
+                    logger.fatal("Error with install for launchwrapper!");
                     e.printStackTrace();
                     System.exit(0);
                 }
                 // Install Minecraft to maven
-                logger.info("Installing minecraft to maven");
+                logger.info("Installing minecraft");
                 try {
-                    String dFile = "-Dfile=" + Paths.get(".minecraft").resolve(serverFinalJar).toString();
-                    String pomFile = "-DpomFile=" +  minecraftPomFile.toString();
-                    Process p = Runtime.getRuntime().exec(baseInstallCommand + " install:install-file " + dFile + " " + pomFile);
+                    Process p = Runtime.getRuntime().exec(baseInstallCommand + "uploadResultArchives --warning-mode=none -p minecraft", null, Paths.get(".minecraft",".dev").toFile());
                     String line;
-                    BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()));
-                    while ((line = in.readLine()) != null) {
+                    BufferedReader input = new BufferedReader(new InputStreamReader(p.getInputStream()));
+                    while ((line = input.readLine()) != null) {
                         System.out.println(line);
                     }
-                    in.close();
+                    input.close();
                 } catch (IOException e) {
-                    logger.fatal("Error with maven install for launchwrapper!");
+                    logger.fatal("Error with install for launchwrapper!");
                     e.printStackTrace();
                     System.exit(0);
                 }
@@ -286,6 +271,12 @@ public class MainStart {
                 System.exit(0);
                 return;
             }
+        }
+        // Create the mixins folder
+        File mixinsFolder = Paths.get(".mixins").toFile();
+        if (!mixinsFolder.exists() && !mixinsFolder.mkdirs()) {
+            logger.error("Failed to make .mixins directory.");
+            return;
         }
         // Load Minecraft
         logger.info("Loading Minecraft remapped");
@@ -343,6 +334,41 @@ public class MainStart {
         // Start launchwrapper
         logger.info("Starting launchwrapper...");
         launch.launch(Stream.concat(Stream.of("--tweakClass", "systems.conduit.tweaker.MixinTweaker"), Arrays.stream(args)).toArray(String[]::new));
+    }
+
+    public static void deleteFolder(File folder) {
+        File[] files = folder.listFiles();
+        if(files != null) {
+            for(File f: files) {
+                if(f.isDirectory()) {
+                    deleteFolder(f);
+                } else {
+                    f.delete();
+                }
+            }
+        }
+        folder.delete();
+    }
+
+    private static void copyFromJar(String source, final Path target) throws URISyntaxException, IOException {
+        URI resource = MainStart.class.getResource("").toURI();
+        FileSystem fileSystem = FileSystems.newFileSystem(resource, Collections.<String, String>emptyMap());
+        final Path jarPath = fileSystem.getPath(source);
+        Files.walkFileTree(jarPath, new SimpleFileVisitor<Path>() {
+            private Path currentTarget;
+            @Override
+            public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
+                currentTarget = target.resolve(jarPath.relativize(dir).toString());
+                Files.createDirectories(currentTarget);
+                return FileVisitResult.CONTINUE;
+            }
+            @Override
+            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                Files.copy(file, target.resolve(jarPath.relativize(file).toString()), StandardCopyOption.REPLACE_EXISTING);
+                return FileVisitResult.CONTINUE;
+            }
+
+        });
     }
 
     private static Optional<JsonVersionManifestType> getVersion(JsonVersionManifest manifest, String version) {

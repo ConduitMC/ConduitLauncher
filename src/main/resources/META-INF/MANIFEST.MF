@@ -1,2 +1,0 @@
-Main-Class: systems.conduit.launcher.MainStart
-Launcher-Agent-Class: systems.conduit.launcher.Agent

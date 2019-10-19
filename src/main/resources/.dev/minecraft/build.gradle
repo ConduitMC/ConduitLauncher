@@ -1,0 +1,36 @@
+plugins {
+    id "java"
+    id "maven"
+}
+
+repositories {
+    mavenLocal()
+    maven {
+        url = "http://repo.maven.apache.org/maven2"
+    }
+}
+
+dependencies {
+    compile "org.apache.logging.log4j:log4j-core:2.8.1"
+    compile "com.mojang:authlib:1.5.25"
+    compile "com.mojang:brigadier:1.0.17"
+    compile "com.mojang:datafixerupper:2.0.24"
+    compile "com.mojang:javabridge:1.0.22"
+}
+
+configurations {
+    resultArchives
+}
+uploadResultArchives {
+    repositories {
+        mavenDeployer {
+            repository(url: mavenLocal().url)
+            pom.version = "minecraft-version"
+            pom.artifactId = "server"
+            pom.groupId = "net.minecraft"
+        }
+    }
+}
+artifacts {
+    resultArchives file: file("jar-location")
+}
