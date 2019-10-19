@@ -1,0 +1,28 @@
+plugins {
+    id "java"
+    id "maven"
+}
+
+repositories {
+    mavenLocal()
+    maven {
+        url = "http://repo.maven.apache.org/maven2"
+    }
+}
+
+configurations {
+    resultArchives
+}
+uploadResultArchives {
+    repositories {
+        mavenDeployer {
+            repository(url: mavenLocal().url)
+            pom.version = "1.13"
+            pom.artifactId = "launchwrapper"
+            pom.groupId = "io.github.lightwayup"
+        }
+    }
+}
+artifacts {
+    resultArchives file: file("jar-location")
+}
