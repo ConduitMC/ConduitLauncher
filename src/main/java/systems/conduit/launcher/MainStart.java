@@ -213,7 +213,7 @@ public class MainStart {
                 try {
                     // Make sure we have the correct directories
                     logger.info("Copying dev directory");
-                    copyFromJar(".dev", Paths.get(".minecraft", ".dev").toAbsolutePath());
+                    copyFromJar(File.separator + ".dev", Paths.get(".minecraft", ".dev").toAbsolutePath());
                 } catch (URISyntaxException | IOException e) {
                     e.printStackTrace();
                 }
@@ -384,7 +384,6 @@ public class MainStart {
                 Files.copy(file, target.resolve(jarPath.relativize(file).toString()), StandardCopyOption.REPLACE_EXISTING);
                 return FileVisitResult.CONTINUE;
             }
-
         });
     }
 
