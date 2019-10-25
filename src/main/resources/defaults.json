@@ -50,6 +50,13 @@
     },
     {
       "type": "url",
+      "groupId": "us.tedstar.mojang2tsrg",
+      "artifactId": "Mojang2Tsrg",
+      "version": "1.0.0",
+      "url": "https://dl.dropboxusercontent.com/s/pp9nj6q246ikcj5/Mojang2Tsrg-1.0.0.jar"
+    },
+    {
+      "type": "url",
       "groupId": "io.github.lightwayup",
       "artifactId": "launchwrapper",
       "version": "1.13",

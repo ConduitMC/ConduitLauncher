@@ -13,6 +13,7 @@ import systems.conduit.launcher.json.minecraft.JsonMinecraft;
 import systems.conduit.launcher.json.mixins.JsonMixin;
 import systems.conduit.launcher.json.mixins.JsonMixins;
 import systems.conduit.launcher.json.version.JsonVersion;
+import us.tedstar.mojang2tsrg.Mojang2Tsrg;
 
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
