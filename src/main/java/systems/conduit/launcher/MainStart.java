@@ -204,7 +204,13 @@ public class MainStart {
                 Path launchWrapperGradleFile = Paths.get(".minecraft", ".dev", "launchwrapper").resolve("build.gradle");
                 Path minecraftGradleFile = Paths.get(".minecraft", ".dev", "minecraft").resolve("build.gradle");
                 // Create base command
-                String baseInstallCommand = (System.getProperty("os.name").toLowerCase().contains("win") ? "cmd.exe /c gradlew.bat " : "./gradlew ");
+                String platform = System.getProperty("os.name").toLowerCase();
+                String baseInstallCommand = "";
+
+                if (platform.contains("win")) baseInstallCommand = "cmd.exe /c gradlew.bat ";
+                else if (platform.contains("mac")) baseInstallCommand = "/bin/sh -c ./gradlew ";
+                else baseInstallCommand = "./gradlew ";
+
                 // Extract dev folder
                 if (Paths.get(".minecraft", ".dev").toFile().exists()) {
                     // Make sure we have the correct directories
