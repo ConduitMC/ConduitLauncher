@@ -25,7 +25,10 @@ tasks.withType(JavaCompile) {
     options.encoding = "UTF-8"
 }
 
-jar {
+java {
+    withJavadocJar()
+    withSourcesJar()
+
     manifest {
         attributes(
                 "Main-Class" : "systems.conduit.launcher.MainStart",

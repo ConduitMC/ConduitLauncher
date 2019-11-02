@@ -176,7 +176,7 @@ public class MainStart {
                 String[] specialSourceArgs = Stream.of(
                         "--in-jar", Paths.get(".minecraft").resolve(serverJar).toFile().getAbsolutePath(),
                         "--out-jar", Paths.get(".minecraft").resolve(serverFinalJar).toFile().getAbsolutePath(),
-                        "--srg-in", Paths.get(".minecraft").resolve(serverMappingsConverted).toFile().getAbsolutePath(),
+                        "--srg-in", mappingsConvertedFile.getAbsolutePath(),
                         "--quiet"
                 ).toArray(String[]::new);
                 try {
@@ -205,11 +205,10 @@ public class MainStart {
                 Path minecraftGradleFile = Paths.get(".minecraft", ".dev", "minecraft").resolve("build.gradle");
                 // Create base command
                 String platform = System.getProperty("os.name").toLowerCase();
-                String baseInstallCommand = "";
+                String baseInstallCommand = "./gradlew ";
 
                 if (platform.contains("win")) baseInstallCommand = "cmd.exe /c gradlew.bat ";
                 else if (platform.contains("mac")) baseInstallCommand = "/bin/sh -c ./gradlew ";
-                else baseInstallCommand = "./gradlew ";
 
                 // Extract dev folder
                 if (Paths.get(".minecraft", ".dev").toFile().exists()) {
