@@ -28,7 +28,9 @@ tasks.withType(JavaCompile) {
 java {
     withJavadocJar()
     withSourcesJar()
+}
 
+jar {
     manifest {
         attributes(
                 "Main-Class" : "systems.conduit.launcher.MainStart",
