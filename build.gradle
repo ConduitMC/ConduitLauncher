@@ -1,20 +1,18 @@
 plugins {
     id "java"
-    id "maven"
+    id "maven-publish"
 }
 
 repositories {
     mavenLocal()
-    maven {
-        url = "http://repo.maven.apache.org/maven2"
-    }
+    mavenCentral()
 }
 
 dependencies {
-    compile "org.apache.logging.log4j:log4j-api:2.8.1"
-    compile "com.google.code.gson:gson:2.8.0"
-    compile "us.tedstar.mojang2tsrg:Mojang2Tsrg:1.0.0"
-    compile "io.github.lightwayup:launchwrapper:1.13"
+    implementation "org.apache.logging.log4j:log4j-api:2.8.1"
+    implementation "com.google.code.gson:gson:2.8.0"
+    implementation "us.tedstar.mojang2tsrg:Mojang2Tsrg:1.0.0"
+    implementation "io.github.lightwayup:launchwrapper:1.13"
 }
 
 group = theGroup
@@ -24,6 +22,8 @@ sourceCompatibility = "1.8"
 tasks.withType(JavaCompile) {
     options.encoding = "UTF-8"
 }
+
+task install(dependsOn: [publishToMavenLocal])
 
 java {
     withSourcesJar()
