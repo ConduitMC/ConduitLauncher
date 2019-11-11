@@ -6,13 +6,20 @@ plugins {
 repositories {
     mavenLocal()
     mavenCentral()
+    maven {
+        url "https://files.minecraftforge.net/maven/"
+    }
+    maven {
+        url "https://repo.spongepowered.org/maven"
+    }
 }
 
 dependencies {
     implementation "org.apache.logging.log4j:log4j-api:2.8.1"
     implementation "com.google.code.gson:gson:2.8.0"
     implementation "us.tedstar.mojang2tsrg:Mojang2Tsrg:1.0.0"
-    implementation "io.github.lightwayup:launchwrapper:1.13"
+    implementation "cpw.mods:modlauncher:4.2.0"
+    implementation "org.spongepowered:mixin:0.8-SNAPSHOT"
 }
 
 group = theGroup

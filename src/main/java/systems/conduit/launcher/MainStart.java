@@ -2,7 +2,7 @@ package systems.conduit.launcher;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import net.minecraft.launchwrapper.Launch;
+import cpw.mods.modlauncher.Launcher;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import systems.conduit.launcher.json.download.JsonDownloadType;
@@ -18,7 +18,6 @@ import us.tedstar.mojang2tsrg.Mojang2Tsrg;
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -36,17 +35,19 @@ public class MainStart {
     private static final String MANIFEST_ENDPOINT = "https://launchermeta.mojang.com/mc/game/version_manifest.json";
 
     public static void main(String[] args) {
+        System.setProperty("mixin.debug", "true");
+
         System.out.println("Starting launcher...");
         // Load logger libraries
-        List<URL> libs = LibraryProcessor.downloadLibrary("logger libraries", true, Arrays.asList(
+        LibraryProcessor.downloadLibrary("logger libraries", true, Arrays.asList(
                 new JsonDownloadType("maven", "org.apache.logging.log4j", "log4j-api", "2.8.1", ""),
                 new JsonDownloadType("maven", "org.apache.logging.log4j", "log4j-core", "2.8.1", "")
         ));
         Logger logger = LogManager.getLogger("Launcher");
         // Load json library
-        libs.addAll(LibraryProcessor.downloadLibrary("json library", false, Collections.singletonList(
+        LibraryProcessor.downloadLibrary("json library", false, Collections.singletonList(
                 new JsonDownloadType("maven", "com.google.code.gson", "gson", "2.8.0", "")
-        )));
+        ));
         // Load default libraries from json to class
         JsonLibraries defaults = new JsonLibraries();
         try (Reader reader = new InputStreamReader(MainStart.class.getResourceAsStream("/defaults.json"), StandardCharsets.UTF_8)) {
@@ -58,9 +59,7 @@ public class MainStart {
             System.exit(0);
         }
         // Download all the default libraries
-        libs.addAll(LibraryProcessor.downloadLibrary("default libraries", false, defaults.getLibs()));
-        // Start default classloader for legacylauncher
-        Launch launch = new Launch();
+        LibraryProcessor.downloadLibrary("default libraries", false, defaults.getLibs());
         // Add Minecraft json if does not exist
         Path minecraftJsonFile = Paths.get("minecraft.json");
         if (!minecraftJsonFile.toFile().exists()) {
@@ -83,9 +82,7 @@ public class MainStart {
             System.exit(0);
         }
         // Download all the Minecraft libraries
-        libs.addAll(LibraryProcessor.downloadLibrary("Minecraft libraries", false, minecraft.getMinecraft()));
-        // Load all the libraries
-        libs.forEach(Launch.classLoader::addURL);
+        LibraryProcessor.downloadLibrary("Minecraft libraries", false, minecraft.getMinecraft());
         // Minecraft info
         String minecraftVersion = minecraft.getVersion();
         String serverJar = "server-" + minecraftVersion + ".jar";
@@ -201,7 +198,6 @@ public class MainStart {
             if (Arrays.asList(args).contains("dev")) {
                 logger.info("Dev mode started");
                 // Create our files
-                Path launchWrapperGradleFile = Paths.get(".minecraft", ".dev", "launchwrapper").resolve("build.gradle");
                 Path minecraftGradleFile = Paths.get(".minecraft", ".dev", "minecraft").resolve("build.gradle");
                 // Create base command
                 String platform = System.getProperty("os.name").toLowerCase();
@@ -223,17 +219,8 @@ public class MainStart {
                 } catch (URISyntaxException | IOException e) {
                     e.printStackTrace();
                 }
-                logger.info("Replacing launchwrapper jar in gradle.build");
-                // Replace jar location in pom
-                try {
-                    String content = new String(Files.readAllBytes(launchWrapperGradleFile), StandardCharsets.UTF_8);
-                    content = content.replace("jar-location", Paths.get(".libs", "io", "github", "lightwayup", "launchwrapper", "1.13").resolve("launchwrapper-1.13.jar").toAbsolutePath().toString().replaceAll("\\\\", "\\\\\\\\"));
-                    Files.write(launchWrapperGradleFile, content.getBytes(StandardCharsets.UTF_8));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                logger.info("Replacing minecraft version and jar in gradle.build");
                 // Replace minecraft version and jar location in pom
+                logger.info("Replacing minecraft version and jar in gradle.build");
                 try {
                     String content = new String(Files.readAllBytes(minecraftGradleFile), StandardCharsets.UTF_8);
                     content = content.replace("minecraft-version", minecraftVersion);
@@ -241,21 +228,6 @@ public class MainStart {
                     Files.write(minecraftGradleFile, content.getBytes(StandardCharsets.UTF_8));
                 } catch (IOException e) {
                     e.printStackTrace();
-                }
-                // Install Launchwrapper to maven
-                logger.info("Installing launchwrapper");
-                try {
-                    Process p = Runtime.getRuntime().exec(baseInstallCommand + "uploadResultArchives --warning-mode=none -p launchwrapper", null, Paths.get(".minecraft",".dev").toFile());
-                    String line;
-                    BufferedReader input = new BufferedReader(new InputStreamReader(p.getInputStream()));
-                    while ((line = input.readLine()) != null) {
-                        System.out.println(line);
-                    }
-                    input.close();
-                } catch (IOException e) {
-                    logger.fatal("Error with install for launchwrapper!");
-                    e.printStackTrace();
-                    System.exit(0);
                 }
                 // Install Minecraft to maven
                 logger.info("Installing minecraft");
@@ -268,7 +240,7 @@ public class MainStart {
                     }
                     input.close();
                 } catch (IOException e) {
-                    logger.fatal("Error with install for launchwrapper!");
+                    logger.fatal("Error with install for minecraft!");
                     e.printStackTrace();
                     System.exit(0);
                 }
@@ -287,11 +259,8 @@ public class MainStart {
         // Load Minecraft
         logger.info("Loading Minecraft remapped");
         File minecraftServer = Paths.get(".minecraft").resolve(serverFinalJar).toFile();
-        try {
-            Launch.classLoader.addURL(minecraftServer.toURI().toURL());
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
+        System.setProperty(ServerLaunchHandlerService.LAUNCH_PROPERTY, minecraftServer.toString());
+        //Agent.addClassPath(minecraftServer);
         logger.info("Loaded Minecraft remapped");
         // Load mixins json
         JsonMixins mixins = new JsonMixins();
@@ -319,6 +288,7 @@ public class MainStart {
                 }
             }
         }
+        ArrayList<String> mixinArgs = new ArrayList<>();
         // Load Mixins
         File[] mixinFiles = mixinsFolder.listFiles();
         if (mixinFiles == null) return;
@@ -340,13 +310,17 @@ public class MainStart {
                         Gson gson = new GsonBuilder().create();
                         JsonLibraries libraries = gson.fromJson(reader, JsonLibraries.class);
                         logger.info("Loading libraries.json: " + properFileName);
-                        List<URL> mixinLibs = LibraryProcessor.downloadLibrary(properFileName + " libraries", false, libraries.getLibs());
-                        // Load all the libraries
-                        mixinLibs.forEach(Launch.classLoader::addURL);
+                        LibraryProcessor.downloadLibrary(properFileName + " libraries", false, libraries.getLibs());
                     }
                 }
+                // Find mixin json.
+                String mixinJson = findMixinEntry(jarFile);
+                if (!mixinJson.isEmpty()) {
+                    mixinArgs.add("--mixin.config");
+                    mixinArgs.add(mixinJson);
+                }
                 // Add to class loader
-                Launch.classLoader.addURL(file.toURI().toURL());
+                Agent.addClassPath(file);
             } catch (IOException e) {
                 logger.fatal("Error loading mixin (" + properFileName + ")!");
                 e.printStackTrace();
@@ -354,9 +328,23 @@ public class MainStart {
             }
             logger.info("Loaded mixin: " + properFileName);
         }
-        // Start launchwrapper
-        logger.info("Starting launchwrapper...");
-        launch.launch(Stream.concat(Stream.of("--tweakClass", "systems.conduit.tweaker.MixinTweaker"), Arrays.stream(args)).toArray(String[]::new));
+        // Start modlauncher
+        logger.info("Starting modlauncher...");
+        args = Stream.concat(Arrays.stream(mixinArgs.toArray(new String[] {})), Arrays.stream(args)).toArray(String[]::new);
+        Launcher.main(Stream.concat(Stream.of("--launchTarget", "minecraft-server"), Arrays.stream(args)).toArray(String[]::new));
+    }
+
+    private static String findMixinEntry(JarFile file) {
+        for (final Enumeration<? extends ZipEntry> e = file.entries(); e.hasMoreElements();) {
+            final ZipEntry ze = e.nextElement();
+            if (!ze.isDirectory()) {
+                final String name = ze.getName();
+                if (name.startsWith("mixins.") && name.endsWith(".json")) {
+                    return name;
+                }
+            }
+        }
+        return "";
     }
 
     public static void deleteFolder(File folder) {

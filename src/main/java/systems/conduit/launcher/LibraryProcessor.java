@@ -15,9 +15,8 @@ class LibraryProcessor {
 
     private static final String DEFAULT_REPO = "http://repo.maven.apache.org/maven2/";
 
-    static List<URL> downloadLibrary(String type, boolean firstLaunch, List<JsonDownloadType> libraries) {
+    static void downloadLibrary(String type, boolean firstLaunch, List<JsonDownloadType> libraries) {
         info(firstLaunch, "Loading " + type);
-        List<URL> loadedJars = new ArrayList<>();
         List<String> loadedLibraries = new ArrayList<>();
         for (JsonDownloadType library : libraries) {
             File libraryPath = new File(Paths.get(".libs").toFile() + File.separator + getPath(library));
@@ -34,7 +33,6 @@ class LibraryProcessor {
                     }
                 }
                 loadedLibraries.add(library.getArtifactId());
-                loadedJars.add(jar.toURI().toURL());
                 Agent.addClassPath(jar);
             } catch (Exception e) {
                 error(firstLaunch, "Error loading " + type + ": " + library.getArtifactId());
@@ -44,7 +42,6 @@ class LibraryProcessor {
 
         }
         if (!loadedLibraries.isEmpty()) LogManager.getLogger("Launcher").info("Loaded " + type + ": " + loadedLibraries);
-        return loadedJars;
     }
 
     private static URL getUrl(JsonDownloadType library) throws MalformedURLException {

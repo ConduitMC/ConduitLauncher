@@ -4,31 +4,31 @@
       "type": "maven",
       "groupId": "org.ow2.asm",
       "artifactId": "asm",
-      "version": "7.1"
-    },
-    {
-      "type": "maven",
-      "groupId": "org.ow2.asm",
-      "artifactId": "asm-commons",
-      "version": "7.1"
-    },
-    {
-      "type": "maven",
-      "groupId": "org.ow2.asm",
-      "artifactId": "asm-util",
-      "version": "7.1"
-    },
-    {
-      "type": "maven",
-      "groupId": "org.ow2.asm",
-      "artifactId": "asm-tree",
-      "version": "7.1"
+      "version": "7.2"
     },
     {
       "type": "maven",
       "groupId": "org.ow2.asm",
       "artifactId": "asm-analysis",
-      "version": "7.1"
+      "version": "7.2"
+    },
+    {
+      "type": "maven",
+      "groupId": "org.ow2.asm",
+      "artifactId": "asm-commons",
+      "version": "7.2"
+    },
+    {
+      "type": "maven",
+      "groupId": "org.ow2.asm",
+      "artifactId": "asm-tree",
+      "version": "7.2"
+    },
+    {
+      "type": "maven",
+      "groupId": "org.ow2.asm",
+      "artifactId": "asm-util",
+      "version": "7.2"
     },
     {
       "type": "maven",
@@ -56,11 +56,18 @@
       "url": "https://dl.dropboxusercontent.com/s/pp9nj6q246ikcj5/Mojang2Tsrg-1.0.0.jar"
     },
     {
-      "type": "url",
-      "groupId": "io.github.lightwayup",
-      "artifactId": "launchwrapper",
-      "version": "1.13",
-      "url": "https://dl.dropboxusercontent.com/s/p4mgbdcztdwhfib/launchwrapper-1.13.jar"
+      "type": "maven",
+      "groupId": "cpw.mods",
+      "artifactId": "grossjava9hacks",
+      "version": "1.1.0",
+      "url": "https://files.minecraftforge.net/maven/"
+    },
+    {
+      "type": "maven",
+      "groupId": "cpw.mods",
+      "artifactId": "modlauncher",
+      "version": "4.2.0",
+      "url": "https://files.minecraftforge.net/maven/"
     },
     {
       "type": "url",
@@ -75,13 +82,6 @@
       "artifactId": "mixin",
       "version": "0.8-preview",
       "url": "https://dl.dropboxusercontent.com/s/osybvylw5tqqzd6/mixin-0.8-preview.jar"
-    },
-    {
-      "type": "url",
-      "groupId": "systems.conduit",
-      "artifactId": "MixinTweaker",
-      "version": "1.0.0",
-      "url": "https://dl.dropboxusercontent.com/s/yzssed6bto1p688/MixinTweaker.jar"
     }
   ]
 }
