@@ -4,31 +4,31 @@
       "type": "maven",
       "groupId": "org.ow2.asm",
       "artifactId": "asm",
-      "version": "7.2"
+      "version": "6.2"
     },
     {
       "type": "maven",
       "groupId": "org.ow2.asm",
       "artifactId": "asm-analysis",
-      "version": "7.2"
+      "version": "6.2"
     },
     {
       "type": "maven",
       "groupId": "org.ow2.asm",
       "artifactId": "asm-commons",
-      "version": "7.2"
+      "version": "6.2"
     },
     {
       "type": "maven",
       "groupId": "org.ow2.asm",
       "artifactId": "asm-tree",
-      "version": "7.2"
+      "version": "6.2"
     },
     {
       "type": "maven",
       "groupId": "org.ow2.asm",
       "artifactId": "asm-util",
-      "version": "7.2"
+      "version": "6.2"
     },
     {
       "type": "maven",

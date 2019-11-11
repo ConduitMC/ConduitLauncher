@@ -260,7 +260,8 @@ public class MainStart {
         logger.info("Loading Minecraft remapped");
         File minecraftServer = Paths.get(".minecraft").resolve(serverFinalJar).toFile();
         System.setProperty(ServerLaunchHandlerService.LAUNCH_PROPERTY, minecraftServer.toString());
-        //Agent.addClassPath(minecraftServer);
+        // TODO: Add back? Seems modlauncher takes care of this
+        // Agent.addClassPath(minecraftServer);
         logger.info("Loaded Minecraft remapped");
         // Load mixins json
         JsonMixins mixins = new JsonMixins();
