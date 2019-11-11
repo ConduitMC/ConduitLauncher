@@ -4,31 +4,31 @@
       "type": "maven",
       "groupId": "org.ow2.asm",
       "artifactId": "asm",
-      "version": "6.2"
+      "version": "7.2"
     },
     {
       "type": "maven",
       "groupId": "org.ow2.asm",
       "artifactId": "asm-analysis",
-      "version": "6.2"
+      "version": "7.2"
     },
     {
       "type": "maven",
       "groupId": "org.ow2.asm",
       "artifactId": "asm-commons",
-      "version": "6.2"
+      "version": "7.2"
     },
     {
       "type": "maven",
       "groupId": "org.ow2.asm",
       "artifactId": "asm-tree",
-      "version": "6.2"
+      "version": "7.2"
     },
     {
       "type": "maven",
       "groupId": "org.ow2.asm",
       "artifactId": "asm-util",
-      "version": "6.2"
+      "version": "7.2"
     },
     {
       "type": "maven",
@@ -74,14 +74,14 @@
       "groupId": "cpw.mods",
       "artifactId": "modlauncher",
       "version": "4.2.0",
-      "url": "https://files.minecraftforge.net/maven/"
+      "url": "https://dl.dropboxusercontent.com/s/r7oxul9viaswhpc/modlauncher-4.2.0.jar"
     },
     {
       "type": "url",
       "groupId": "org.spongepowered",
       "artifactId": "mixin",
       "version": "0.8",
-      "url": "https://repo.spongepowered.org/maven/org/spongepowered/mixin/0.8-SNAPSHOT/mixin-0.8-20191111.122001-4.jar"
+      "url": "https://dl.dropboxusercontent.com/s/7f9w8qdh195h93o/mixin-0.8.jar"
     }
   ]
 }
