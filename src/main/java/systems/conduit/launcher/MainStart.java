@@ -32,11 +32,12 @@ import java.util.zip.ZipEntry;
 
 public class MainStart {
 
+    protected static List<String> MIXINS = new ArrayList<>();
+    protected static List<Path> PATHS = new ArrayList<>();
     private static final String MANIFEST_ENDPOINT = "https://launchermeta.mojang.com/mc/game/version_manifest.json";
 
     public static void main(String[] args) {
-        System.setProperty("mixin.debug", "true");
-
+        // System.setProperty("mixin.debug", "true");
         System.out.println("Starting launcher...");
         // Load logger libraries
         LibraryProcessor.downloadLibrary("logger libraries", true, Arrays.asList(
@@ -259,8 +260,7 @@ public class MainStart {
         // Load Minecraft
         logger.info("Loading Minecraft remapped");
         File minecraftServer = Paths.get(".minecraft").resolve(serverFinalJar).toFile();
-        System.setProperty(ServerLaunchHandlerService.LAUNCH_PROPERTY, minecraftServer.toString());
-        Agent.addClassPath(minecraftServer);
+        PATHS.add(minecraftServer.toPath());
         logger.info("Loaded Minecraft remapped");
         // Load mixins json
         JsonMixins mixins = new JsonMixins();
@@ -288,7 +288,6 @@ public class MainStart {
                 }
             }
         }
-        ArrayList<String> mixinArgs = new ArrayList<>();
         // Load Mixins
         File[] mixinFiles = mixinsFolder.listFiles();
         if (mixinFiles == null) return;
@@ -315,12 +314,9 @@ public class MainStart {
                 }
                 // Find mixin json.
                 String mixinJson = findMixinEntry(jarFile);
-                if (!mixinJson.isEmpty()) {
-                    mixinArgs.add("--mixin.config");
-                    mixinArgs.add(mixinJson);
-                }
+                if (!mixinJson.isEmpty()) MIXINS.add(mixinJson);
                 // Add to class loader
-                Agent.addClassPath(file);
+                PATHS.add(file.toPath());
             } catch (IOException e) {
                 logger.fatal("Error loading mixin (" + properFileName + ")!");
                 e.printStackTrace();
@@ -330,7 +326,6 @@ public class MainStart {
         }
         // Start modlauncher
         logger.info("Starting modlauncher...");
-        args = Stream.concat(Arrays.stream(mixinArgs.toArray(new String[] {})), Arrays.stream(args)).toArray(String[]::new);
         Launcher.main(Stream.concat(Stream.of("--launchTarget", "minecraft-server"), Arrays.stream(args)).toArray(String[]::new));
     }
 
