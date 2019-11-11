@@ -56,6 +56,13 @@
       "url": "https://dl.dropboxusercontent.com/s/pp9nj6q246ikcj5/Mojang2Tsrg-1.0.0.jar"
     },
     {
+      "type": "url",
+      "groupId": "net.md-5",
+      "artifactId": "SpecialSource",
+      "version": "1.8.6",
+      "url": "https://dl.dropboxusercontent.com/s/o49pc793j4mevw3/SpecialSource-1.8.6.jar"
+    },
+    {
       "type": "maven",
       "groupId": "cpw.mods",
       "artifactId": "grossjava9hacks",
@@ -71,17 +78,10 @@
     },
     {
       "type": "url",
-      "groupId": "net.md-5",
-      "artifactId": "SpecialSource",
-      "version": "1.8.6",
-      "url": "https://dl.dropboxusercontent.com/s/o49pc793j4mevw3/SpecialSource-1.8.6.jar"
-    },
-    {
-      "type": "url",
       "groupId": "org.spongepowered",
       "artifactId": "mixin",
-      "version": "0.8-preview",
-      "url": "https://dl.dropboxusercontent.com/s/osybvylw5tqqzd6/mixin-0.8-preview.jar"
+      "version": "0.8",
+      "url": "https://repo.spongepowered.org/maven/org/spongepowered/mixin/0.8-SNAPSHOT/mixin-0.8-20191111.122001-4.jar"
     }
   ]
 }
