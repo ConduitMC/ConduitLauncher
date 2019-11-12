@@ -250,14 +250,13 @@ public class MainStart {
                 logger.info("Done with dev install!");
                 logger.info("To start your server normally remove the dev argument!");
                 System.exit(0);
-                return;
             }
         }
         // Create the mixins folder
         Path mixinsPath = Paths.get(".mixins");
         if (!mixinsPath.toFile().exists() && !mixinsPath.toFile().mkdirs()) {
             logger.error("Failed to make .mixins directory.");
-            return;
+            System.exit(0);
         }
         // Load Minecraft
         logger.info("Loading Minecraft remapped");
