@@ -291,39 +291,40 @@ public class MainStart {
         }
         // Load Mixins
         File[] mixinFiles = mixinsPath.toFile().listFiles();
-        if (mixinFiles == null) return;
-        for (File file : mixinFiles) {
-            // Skip folders
-            if (!file.isFile()) continue;
-            // Make sure that it ends with .jar
-            if (!file.getName().endsWith(".jar")) continue;
-            // Since it is a file, and it ends with .jar, we can proceed with attempting to load it.
-            String properFileName = file.getName().substring(0, file.getName().length() - 4);
-            try{
-                // Get jar file
-                JarFile jarFile = new JarFile(file);
-                // Load libraries from json
-                ZipEntry libZip = jarFile.getEntry("libraries.json");
-                if (libZip != null) {
-                    logger.info("Found libraries.json: " + properFileName);
-                    try (Reader reader = new InputStreamReader(jarFile.getInputStream(libZip))) {
-                        Gson gson = new GsonBuilder().create();
-                        JsonLibraries libraries = gson.fromJson(reader, JsonLibraries.class);
-                        logger.info("Loading libraries.json: " + properFileName);
-                        LibraryProcessor.downloadLibrary(properFileName + " libraries", false, libraries.getLibs());
+        if (mixinFiles != null) {
+            for (File file : mixinFiles) {
+                // Skip folders
+                if (!file.isFile()) continue;
+                // Make sure that it ends with .jar
+                if (!file.getName().endsWith(".jar")) continue;
+                // Since it is a file, and it ends with .jar, we can proceed with attempting to load it.
+                String properFileName = file.getName().substring(0, file.getName().length() - 4);
+                try {
+                    // Get jar file
+                    JarFile jarFile = new JarFile(file);
+                    // Load libraries from json
+                    ZipEntry libZip = jarFile.getEntry("libraries.json");
+                    if (libZip != null) {
+                        logger.info("Found libraries.json: " + properFileName);
+                        try (Reader reader = new InputStreamReader(jarFile.getInputStream(libZip))) {
+                            Gson gson = new GsonBuilder().create();
+                            JsonLibraries libraries = gson.fromJson(reader, JsonLibraries.class);
+                            logger.info("Loading libraries.json: " + properFileName);
+                            LibraryProcessor.downloadLibrary(properFileName + " libraries", false, libraries.getLibs());
+                        }
                     }
+                    // Find mixin json.
+                    String mixinJson = findMixinEntry(jarFile);
+                    if (!mixinJson.isEmpty()) MIXINS.add(mixinJson);
+                    // Add to class loader
+                    PATHS.add(file.toPath());
+                } catch (IOException e) {
+                    logger.fatal("Error loading mixin (" + properFileName + ")!");
+                    e.printStackTrace();
+                    System.exit(0);
                 }
-                // Find mixin json.
-                String mixinJson = findMixinEntry(jarFile);
-                if (!mixinJson.isEmpty()) MIXINS.add(mixinJson);
-                // Add to class loader
-                PATHS.add(file.toPath());
-            } catch (IOException e) {
-                logger.fatal("Error loading mixin (" + properFileName + ")!");
-                e.printStackTrace();
-                System.exit(0);
+                logger.info("Loaded mixin: " + properFileName);
             }
-            logger.info("Loaded mixin: " + properFileName);
         }
         // Start modlauncher
         logger.info("Starting modlauncher...");
