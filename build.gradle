@@ -40,8 +40,7 @@ jar {
     manifest {
         attributes(
                 "Main-Class" : "systems.conduit.launcher.MainStart",
-                "Launcher-Agent-Class" : "systems.conduit.launcher.Agent",
-                "MixinConnector" : "systems.conduit.launcher.ServerMixinConnector"
+                "Launcher-Agent-Class" : "systems.conduit.launcher.Agent"
         )
     }
 }
