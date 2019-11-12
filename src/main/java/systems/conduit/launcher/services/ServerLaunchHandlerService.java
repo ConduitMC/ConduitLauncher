@@ -1,9 +1,10 @@
-package systems.conduit.launcher;
+package systems.conduit.launcher.services;
 
 import cpw.mods.modlauncher.api.ILaunchHandlerService;
 import cpw.mods.modlauncher.api.ITransformingClassLoader;
 import cpw.mods.modlauncher.api.ITransformingClassLoaderBuilder;
 import org.spongepowered.asm.mixin.Mixins;
+import systems.conduit.launcher.MainStart;
 
 import java.lang.reflect.Method;
 import java.nio.file.Path;
@@ -34,6 +35,6 @@ public class ServerLaunchHandlerService implements ILaunchHandlerService {
 
     @Override
     public Path[] getPaths() {
-        return MainStart.PATHS.toArray(new Path[] {});
+        return MainStart.PATHS.toArray(new Path[]{});
     }
 }
