@@ -55,7 +55,7 @@ public class MainStart {
             Gson gson = new GsonBuilder().create();
             defaults = gson.fromJson(reader, JsonLibraries.class);
         } catch (IOException e) {
-            logger.fatal("Error reading default libraries json!");
+            logger.fatal("Error reading default libraries json");
             e.printStackTrace();
             System.exit(0);
         }
@@ -67,7 +67,7 @@ public class MainStart {
             try (InputStream inputStream = MainStart.class.getResourceAsStream("/minecraft.json")) {
                 Files.copy(inputStream, minecraftJsonFile, StandardCopyOption.REPLACE_EXISTING);
             } catch (IOException e) {
-                logger.fatal("Error copying Minecraft json!");
+                logger.fatal("Error copying Minecraft json");
                 e.printStackTrace();
                 System.exit(0);
             }
@@ -78,7 +78,7 @@ public class MainStart {
             Gson gson = new GsonBuilder().create();
             minecraft = gson.fromJson(reader, JsonMinecraft.class);
         } catch (IOException e) {
-            logger.fatal("Error reading Minecraft libraries json!");
+            logger.fatal("Error reading Minecraft libraries json");
             e.printStackTrace();
             System.exit(0);
         }
@@ -103,11 +103,11 @@ public class MainStart {
                 if (version.isPresent()) {
                     versionUrl = version.get().getUrl();
                 } else {
-                    logger.fatal("Unable to get version info for Minecraft (" + minecraftVersion + ")!");
+                    logger.fatal("Unable to get version info for Minecraft (" + minecraftVersion + ")");
                     System.exit(0);
                 }
             } catch (IOException e) {
-                logger.fatal("Error reading Minecraft manifest url!");
+                logger.fatal("Error reading Minecraft manifest url");
                 e.printStackTrace();
                 System.exit(0);
             }
@@ -120,7 +120,7 @@ public class MainStart {
                     serverUrl = version.getDownloads().getServer().getUrl();
                     serverMappingsUrl = version.getDownloads().getServerMappings().getUrl();
                 } catch (IOException e) {
-                    logger.fatal("Error reading Minecraft version url!");
+                    logger.fatal("Error reading Minecraft version url");
                     e.printStackTrace();
                     System.exit(0);
                 }
@@ -130,12 +130,12 @@ public class MainStart {
                         logger.info("Downloading Minecraft server (" + minecraftVersion + ")");
                         downloadFile(new URL(serverUrl), serverJar.toFile());
                     } catch (IOException e) {
-                        logger.fatal("Error creating server url!");
+                        logger.fatal("Error creating server url");
                         e.printStackTrace();
                         System.exit(0);
                     }
                 } else {
-                    logger.fatal("Error reading Minecraft server url!");
+                    logger.fatal("Error reading Minecraft server url");
                     System.exit(0);
                 }
                 // Cleanup Minecraft
@@ -148,12 +148,12 @@ public class MainStart {
                         logger.info("Downloading server mappings");
                         downloadFile(new URL(serverMappingsUrl), serverMappings.toFile());
                     } catch (IOException e) {
-                        logger.fatal("Error creating server mappings url!");
+                        logger.fatal("Error creating server mappings url");
                         e.printStackTrace();
                         System.exit(0);
                     }
                 } else {
-                    logger.fatal("Error reading Minecraft server mappings url!");
+                    logger.fatal("Error reading Minecraft server mappings url");
                     System.exit(0);
                 }
                 // Convert Minecraft mappings
@@ -165,13 +165,13 @@ public class MainStart {
                     m2t.loadClasses(mappingsFile);
                     m2t.writeTsrg(mappingsFile, mappingsConvertedFile);
                 } catch (IOException e) {
-                    logger.fatal("Error converting Minecraft server mappings!");
+                    logger.fatal("Error converting Minecraft server mappings");
                     e.printStackTrace();
                     System.exit(0);
                 }
                 mappingsFile.delete();
                 // Remapping Minecraft
-                logger.info("Remapping Minecraft (This might take a bit!)");
+                logger.info("Remapping Minecraft (This might take a bit)");
                 String[] specialSourceArgs = Stream.of(
                         "--in-jar", serverJar.toFile().getAbsolutePath(),
                         "--out-jar", serverFinalJar.toFile().getAbsolutePath(),
@@ -183,7 +183,7 @@ public class MainStart {
                     Method method = cls.getMethod("main", String[].class);
                     method.invoke(null, (Object) specialSourceArgs);
                 } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | ClassNotFoundException e) {
-                    logger.fatal("Error remapping Minecraft!");
+                    logger.fatal("Error remapping Minecraft");
                     e.printStackTrace();
                     System.exit(0);
                 }
@@ -191,7 +191,7 @@ public class MainStart {
                 mappingsConvertedFile.delete();
                 logger.info("Remapped Minecraft");
             } else {
-                logger.fatal("Unable to get version url for Minecraft (" + minecraftVersion + ")!");
+                logger.fatal("Unable to get version url for Minecraft (" + minecraftVersion + ")");
                 System.exit(0);
             }
         }
@@ -243,19 +243,19 @@ public class MainStart {
                     }
                     input.close();
                 } catch (IOException e) {
-                    logger.fatal("Error with install for minecraft!");
+                    logger.fatal("Error with install for minecraft");
                     e.printStackTrace();
                     System.exit(0);
                 }
-                logger.info("Done with dev install!");
-                logger.info("To start your server normally remove the dev argument!");
+                logger.info("Done with dev install");
+                logger.info("To start your server normally remove the dev argument");
                 System.exit(0);
             }
         }
         // Create the mixins folder
         Path mixinsPath = Paths.get(".mixins");
         if (!mixinsPath.toFile().exists() && !mixinsPath.toFile().mkdirs()) {
-            logger.error("Failed to make .mixins directory.");
+            logger.fatal("Failed to make .mixins directory");
             System.exit(0);
         }
         // Load Minecraft
@@ -268,7 +268,7 @@ public class MainStart {
             Gson gson = new GsonBuilder().create();
             mixins = gson.fromJson(reader, JsonMixins.class);
         } catch (IOException e) {
-            logger.fatal("Error reading mixins json!");
+            logger.fatal("Error reading mixins json");
             e.printStackTrace();
             System.exit(0);
         }
@@ -282,7 +282,7 @@ public class MainStart {
                         downloadFile(new URL(mixin.getUrl()), file);
                     }
                 } catch (IOException e) {
-                    logger.fatal("Error downloading mixin (" + mixin.getName() + ")!");
+                    logger.fatal("Error downloading mixin (" + mixin.getName() + ")");
                     e.printStackTrace();
                     System.exit(0);
                 }
@@ -318,7 +318,7 @@ public class MainStart {
                     // Add to class loader
                     PATHS.add(file.toPath());
                 } catch (IOException e) {
-                    logger.fatal("Error loading mixin (" + properFileName + ")!");
+                    logger.fatal("Error loading mixin (" + properFileName + ")");
                     e.printStackTrace();
                     System.exit(0);
                 }
