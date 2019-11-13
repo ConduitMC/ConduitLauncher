@@ -32,11 +32,10 @@ import java.util.zip.ZipEntry;
 
 public class MainStart {
 
-    public static final List<String> MIXINS = new ArrayList<>();
-    public static final List<Path> PATHS = new ArrayList<>();
+    public static final List<Map.Entry<String, Path>> MIXINS = new ArrayList<>();
 
     public static void main(String[] args) {
-        // System.setProperty("mixin.debug", "true");
+        //System.setProperty("mixin.debug", "true");
         System.out.println("Starting launcher...");
         // Load logger libraries
         LibraryProcessor.downloadLibrary("logger libraries", true, Arrays.asList(
@@ -246,7 +245,7 @@ public class MainStart {
         }
         // Load Minecraft
         logger.info("Loading Minecraft remapped");
-        PATHS.add(Constants.SERVER_MAPPED_JAR_PATH.toFile().toPath());
+        Agent.addClassPath(Constants.SERVER_MAPPED_JAR_PATH.toFile());
         logger.info("Loaded Minecraft remapped");
         // Load mixins json
         JsonMixins mixins = new JsonMixins();
@@ -300,9 +299,9 @@ public class MainStart {
                     }
                     // Find mixin json.
                     String mixinJson = findMixinEntry(jarFile);
-                    if (!mixinJson.isEmpty()) MIXINS.add(mixinJson);
+                    if (!mixinJson.isEmpty()) MIXINS.add(new AbstractMap.SimpleImmutableEntry<>(mixinJson, file.toPath()));
                     // Add to class loader
-                    PATHS.add(file.toPath());
+                    Agent.addClassPath(file);
                 } catch (IOException e) {
                     logger.fatal("Error loading mixin (" + properFileName + ")");
                     e.printStackTrace();
