@@ -297,9 +297,13 @@ public class MainStart {
                             LibraryProcessor.downloadLibrary(properFileName + " libraries", false, libraries.getLibs());
                         }
                     }
-                    // Find mixin json.
-                    String mixinJson = findMixinEntry(jarFile);
-                    if (!mixinJson.isEmpty()) MIXINS.add(new AbstractMap.SimpleImmutableEntry<>(mixinJson, file.toPath()));
+                    // Find all mixins for a jar.
+                    List<String> mixinsJson = findMixinEntry(jarFile);
+                    if (!mixinsJson.isEmpty()) {
+                        for (String mixin : mixinsJson) {
+                            MIXINS.add(new AbstractMap.SimpleImmutableEntry<>(mixin, file.toPath()));
+                        }
+                    }
                     // Add to class loader
                     Agent.addClassPath(file);
                 } catch (IOException e) {
@@ -315,17 +319,18 @@ public class MainStart {
         Launcher.main(Stream.concat(Stream.of("--launchTarget", "minecraft-server"), Arrays.stream(args)).toArray(String[]::new));
     }
 
-    private static String findMixinEntry(JarFile file) {
+    private static List<String> findMixinEntry(JarFile file) {
+        List<String> mixins = new ArrayList<>();
         for (final Enumeration<? extends ZipEntry> e = file.entries(); e.hasMoreElements();) {
             final ZipEntry ze = e.nextElement();
             if (!ze.isDirectory()) {
                 final String name = ze.getName();
                 if (name.startsWith("mixins.") && name.endsWith(".json")) {
-                    return name;
+                    mixins.add(name);
                 }
             }
         }
-        return "";
+        return mixins;
     }
 
     public static void deleteFolder(File folder) {
