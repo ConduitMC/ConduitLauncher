@@ -21,7 +21,8 @@ public class Constants {
     public static Path SERVER_MAPPINGS_CONVERTED_PATH;
 
     public static final Path DEV_PATH = Paths.get(".minecraft", ".dev");
-    public static final Path BUILD_GRADLE_PATH = DEV_PATH.resolve("minecraft").resolve("build.gradle");
+    public static final Path SERVER_DEV_PATH = DEV_PATH.resolve("server");
+    public static final Path BUILD_GRADLE_PATH = SERVER_DEV_PATH.resolve("build.gradle");
 
     public static final Path MIXINS_PATH = Paths.get(".mixins");
 

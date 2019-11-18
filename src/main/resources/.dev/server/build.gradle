@@ -1,0 +1,47 @@
+plugins {
+    id "java"
+    id "java-library"
+    id "maven-publish"
+}
+
+repositories {
+    mavenLocal()
+    maven {
+        url = "http://repo.maven.apache.org/maven2"
+    }
+}
+
+rootProject.group = "net.minecraft"
+rootProject.version = "minecraft-version"
+
+dependencies {
+    api "org.apache.logging.log4j:log4j-core:2.8.1"
+    api "io.netty:netty-all:4.1.25.Final"
+    api "com.mojang:authlib:1.5.25"
+    api "com.mojang:brigadier:1.0.17"
+    api "com.mojang:datafixerupper:2.0.24"
+    api "com.mojang:javabridge:1.0.22"
+}
+
+artifacts {
+    archives file("jar-location")
+}
+
+task install(dependsOn: [publishToMavenLocal])
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifact file("jar-location")
+            pom.withXml {
+                def dependenciesNode = asNode().appendNode('dependencies')
+                configurations.api.allDependencies.each {
+                    def dependencyNode = dependenciesNode.appendNode('dependency')
+                    dependencyNode.appendNode('groupId', it.group)
+                    dependencyNode.appendNode('artifactId', it.name)
+                    dependencyNode.appendNode('version', it.version)
+                }
+            }
+        }
+    }
+}
