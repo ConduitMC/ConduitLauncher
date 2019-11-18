@@ -56,11 +56,11 @@
       "url": "https://repo.conduit.systems/repository/releases/"
     },
     {
-      "type": "url",
+      "type": "maven",
       "groupId": "net.md-5",
       "artifactId": "SpecialSource",
       "version": "1.8.6",
-      "url": "https://dl.dropboxusercontent.com/s/o49pc793j4mevw3/SpecialSource-1.8.6.jar"
+      "url": "https://repo.conduit.systems/repository/releases/"
     },
     {
       "type": "maven",
