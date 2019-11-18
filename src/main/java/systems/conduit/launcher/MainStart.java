@@ -18,10 +18,10 @@ import us.tedstar.mojang2tsrg.Mojang2Tsrg;
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystem;
 import java.nio.file.*;
@@ -409,11 +409,16 @@ public class MainStart {
     }
 
     static void downloadFile(URL url, File location) throws IOException {
-        URLConnection connection = url.openConnection();
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setDoOutput(true);
+        connection.setInstanceFollowRedirects(false);
+        connection.setRequestMethod("GET");
         connection.addRequestProperty("User-Agent", "Mozilla/5.0");
+        connection.setRequestProperty("charset", "utf-8");
         connection.connect();
         try (InputStream inputStream = connection.getInputStream()) {
             Files.copy(inputStream, location.toPath(), StandardCopyOption.REPLACE_EXISTING);
         }
+        connection.disconnect();
     }
 }
