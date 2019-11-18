@@ -7,20 +7,16 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-class LibraryProcessor {
+public class LibraryProcessor {
 
-    private static final String DEFAULT_REPO = "http://repo.maven.apache.org/maven2/";
-
-    static List<URL> downloadLibrary(String type, boolean firstLaunch, List<JsonDownloadType> libraries) {
+    public static void downloadLibrary(String type, boolean firstLaunch, List<JsonDownloadType> libraries) {
         info(firstLaunch, "Loading " + type);
-        List<URL> loadedJars = new ArrayList<>();
         List<String> loadedLibraries = new ArrayList<>();
         for (JsonDownloadType library : libraries) {
-            File libraryPath = new File(Paths.get(".libs").toFile() + File.separator + getPath(library));
+            File libraryPath = new File(Constants.LIBRARIES_PATH.toFile() + File.separator + getPath(library));
             try {
                 Files.createDirectories(libraryPath.toPath());
                 File jar = new File(libraryPath, getFileName(library));
@@ -34,7 +30,6 @@ class LibraryProcessor {
                     }
                 }
                 loadedLibraries.add(library.getArtifactId());
-                loadedJars.add(jar.toURI().toURL());
                 Agent.addClassPath(jar);
             } catch (Exception e) {
                 error(firstLaunch, "Error loading " + type + ": " + library.getArtifactId());
@@ -43,12 +38,11 @@ class LibraryProcessor {
             }
 
         }
-        if (!loadedLibraries.isEmpty()) LogManager.getLogger("Launcher").info("Loaded " + type + ": " + loadedLibraries);
-        return loadedJars;
+        if (!loadedLibraries.isEmpty()) LogManager.getLogger(Constants.LOGGER_NAME).info("Loaded " + type + ": " + loadedLibraries);
     }
 
     private static URL getUrl(JsonDownloadType library) throws MalformedURLException {
-        String repo = DEFAULT_REPO;
+        String repo = Constants.DEFAULT_REPO;
         if (library.getUrl() != null && !library.getUrl().trim().isEmpty()) repo = library.getUrl().trim();
         return new URL((repo.endsWith("/") ? repo : repo + "/") + getPath(library) + getFileName(library));
     }
@@ -65,7 +59,7 @@ class LibraryProcessor {
         if (firstLaunch) {
             System.out.println(message);
         } else {
-            LogManager.getLogger("Launcher").info(message);
+            LogManager.getLogger(Constants.LOGGER_NAME).info(message);
         }
     }
 
@@ -73,7 +67,7 @@ class LibraryProcessor {
         if (firstLaunch) {
             System.out.println(message);
         } else {
-            LogManager.getLogger("Launcher").fatal(message);
+            LogManager.getLogger(Constants.LOGGER_NAME).fatal(message);
         }
     }
 }
