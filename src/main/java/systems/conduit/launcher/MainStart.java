@@ -36,6 +36,7 @@ public class MainStart {
     public static final List<Map.Entry<String, Path>> MIXINS = new ArrayList<>();
 
     public static void main(String[] args) {
+        System.setProperty("http.agent", "Mozilla/5.0");
         //System.setProperty("mixin.debug", "true");
         System.out.println("Starting launcher...");
         // Load logger libraries
@@ -409,7 +410,7 @@ public class MainStart {
 
     static void downloadFile(URL url, File location) throws IOException {
         URLConnection connection = url.openConnection();
-        connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11");
+        connection.addRequestProperty("User-Agent", "Mozilla/5.0");
         connection.connect();
         try (InputStream inputStream = connection.getInputStream()) {
             Files.copy(inputStream, location.toPath(), StandardCopyOption.REPLACE_EXISTING);
