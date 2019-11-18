@@ -49,11 +49,11 @@
       "version": "5.0.3"
     },
     {
-      "type": "url",
-      "groupId": "us.tedstar.mojang2tsrg",
+      "type": "maven",
+      "groupId": "us.tedstar",
       "artifactId": "Mojang2Tsrg",
       "version": "1.0.0",
-      "url": "https://dl.dropboxusercontent.com/s/pp9nj6q246ikcj5/Mojang2Tsrg-1.0.0.jar"
+      "url": "https://repo.conduit.systems/repository/releases/"
     },
     {
       "type": "url",
@@ -74,14 +74,14 @@
       "groupId": "cpw.mods",
       "artifactId": "modlauncher",
       "version": "4.2.0",
-      "url": "https://dl.dropboxusercontent.com/s/r7oxul9viaswhpc/modlauncher-4.2.0.jar"
+      "url": "https://repo.conduit.systems/repository/releases/"
     },
     {
-      "type": "url",
+      "type": "maven",
       "groupId": "org.spongepowered",
       "artifactId": "mixin",
       "version": "0.8",
-      "url": "https://dl.dropboxusercontent.com/s/7f9w8qdh195h93o/mixin-0.8.jar"
+      "url": "https://repo.conduit.systems/repository/releases/"
     }
   ]
 }
