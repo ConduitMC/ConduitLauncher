@@ -411,7 +411,6 @@ public class MainStart {
     static void downloadFile(URL url, File location) throws IOException {
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setDoOutput(true);
-        connection.setInstanceFollowRedirects(false);
         connection.setRequestMethod("GET");
         connection.addRequestProperty("User-Agent", "Mozilla/5.0");
         connection.setRequestProperty("charset", "utf-8");
