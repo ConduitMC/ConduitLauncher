@@ -7,10 +7,7 @@ repositories {
     mavenLocal()
     mavenCentral()
     maven {
-        url "https://files.minecraftforge.net/maven/"
-    }
-    maven {
-        url "https://repo.spongepowered.org/maven"
+        url "https://repo.conduit.systems/repository/releases/"
     }
 }
 
@@ -19,7 +16,7 @@ dependencies {
     implementation "com.google.code.gson:gson:2.8.0"
     implementation "us.tedstar.mojang2tsrg:Mojang2Tsrg:1.0.0"
     implementation "cpw.mods:modlauncher:4.2.0"
-    implementation "org.spongepowered:mixin:0.8-SNAPSHOT"
+    implementation "org.spongepowered:mixin:0.8"
 }
 
 group = theGroup
@@ -49,6 +46,15 @@ publishing {
     publications {
         mavenJava(MavenPublication) {
             from components.java
+        }
+    }
+    repositories {
+        maven {
+            credentials {
+                username System.getProperty("MAVEN_USER")?:'ci'
+                password System.getProperty("MAVEN_PASSWORD")?:'password'
+            }
+            url "https://repo.conduit.systems/repository/releases/"
         }
     }
 }
