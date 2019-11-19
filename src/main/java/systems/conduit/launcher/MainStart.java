@@ -25,6 +25,9 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystem;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.nio.file.attribute.FileAttribute;
+import java.nio.file.attribute.PosixFilePermission;
+import java.nio.file.attribute.PosixFilePermissions;
 import java.util.*;
 import java.util.jar.JarFile;
 import java.util.stream.Stream;
@@ -357,12 +360,14 @@ public class MainStart {
             @Override
             public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
                 currentTarget = target.resolve(jarPath.relativize(dir).toString());
-                Files.createDirectories(currentTarget);
+                Set<PosixFilePermission> perms = PosixFilePermissions.fromString("rwxrwxrwx");
+                FileAttribute<Set<PosixFilePermission>> attr = PosixFilePermissions.asFileAttribute(perms);
+                Files.createDirectories(currentTarget, attr);
                 return FileVisitResult.CONTINUE;
             }
             @Override
             public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                Files.copy(file, target.resolve(jarPath.relativize(file).toString()), StandardCopyOption.REPLACE_EXISTING);
+                Files.copy(file, target.resolve(jarPath.relativize(file).toString()), StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.COPY_ATTRIBUTES);
                 return FileVisitResult.CONTINUE;
             }
         });
