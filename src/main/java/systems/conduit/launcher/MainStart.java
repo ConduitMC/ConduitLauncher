@@ -25,9 +25,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystem;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.nio.file.attribute.FileAttribute;
-import java.nio.file.attribute.PosixFilePermission;
-import java.nio.file.attribute.PosixFilePermissions;
 import java.util.*;
 import java.util.jar.JarFile;
 import java.util.stream.Stream;
@@ -170,8 +167,7 @@ public class MainStart {
                 String[] specialSourceArgs = Stream.of(
                         "--in-jar", Constants.SERVER_JAR_PATH.toFile().getAbsolutePath(),
                         "--out-jar", Constants.SERVER_MAPPED_JAR_PATH.toFile().getAbsolutePath(),
-                        "--srg-in", Constants.SERVER_MAPPINGS_CONVERTED_PATH.toFile().getAbsolutePath(),
-                        "--quiet"
+                        "--srg-in", Constants.SERVER_MAPPINGS_CONVERTED_PATH.toFile().getAbsolutePath()
                 ).toArray(String[]::new);
                 try {
                     Class<?> cls = Class.forName("net.md_5.specialsource.SpecialSource", true, ClassLoader.getSystemClassLoader());
@@ -211,6 +207,21 @@ public class MainStart {
                     copyFromJar(File.separator + ".dev", Constants.DEV_PATH.toAbsolutePath());
                 } catch (URISyntaxException | IOException e) {
                     e.printStackTrace();
+                }
+                // Set gradle permissions
+                if (!platform.contains("win") && !platform.contains("mac")) {
+                    try {
+                        logger.info("Setting gradle permissions");
+                        Process p = Runtime.getRuntime().exec("chmod +x ./gradlew", null, Constants.SERVER_DEV_PATH.toFile());
+                        String line;
+                        BufferedReader input = new BufferedReader(new InputStreamReader(p.getInputStream()));
+                        while ((line = input.readLine()) != null) {
+                            System.out.println(line);
+                        }
+                        input.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
                 // Replace minecraft version and jar location in pom
                 logger.info("Replacing minecraft version and jar in gradle.build");
@@ -360,9 +371,7 @@ public class MainStart {
             @Override
             public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
                 currentTarget = target.resolve(jarPath.relativize(dir).toString());
-                Set<PosixFilePermission> perms = PosixFilePermissions.fromString("rwxrwxrwx");
-                FileAttribute<Set<PosixFilePermission>> attr = PosixFilePermissions.asFileAttribute(perms);
-                Files.createDirectories(currentTarget, attr);
+                Files.createDirectories(currentTarget);
                 return FileVisitResult.CONTINUE;
             }
             @Override
