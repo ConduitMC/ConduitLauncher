@@ -24,28 +24,28 @@
       "groupId": "com.mojang",
       "artifactId": "authlib",
       "version": "1.5.25",
-      "url": "http://libraries.minecraft.net/"
+      "url": "https://libraries.minecraft.net/"
     },
     {
       "type": "maven",
       "groupId": "com.mojang",
       "artifactId": "brigadier",
       "version": "1.0.17",
-      "url": "http://libraries.minecraft.net/"
+      "url": "https://libraries.minecraft.net/"
     },
     {
       "type": "maven",
       "groupId": "com.mojang",
       "artifactId": "datafixerupper",
       "version": "2.0.24",
-      "url": "http://libraries.minecraft.net/"
+      "url": "https://libraries.minecraft.net/"
     },
     {
       "type": "maven",
       "groupId": "com.mojang",
       "artifactId": "javabridge",
       "version": "1.0.22",
-      "url": "http://libraries.minecraft.net/"
+      "url": "https://libraries.minecraft.net/"
     }
   ]
 }

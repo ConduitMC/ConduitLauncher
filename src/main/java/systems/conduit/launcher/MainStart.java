@@ -18,7 +18,6 @@ import us.tedstar.mojang2tsrg.Mojang2Tsrg;
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -409,15 +408,8 @@ public class MainStart {
     }
 
     static void downloadFile(URL url, File location) throws IOException {
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setDoOutput(true);
-        connection.setRequestMethod("GET");
-        connection.addRequestProperty("User-Agent", "Mozilla/5.0");
-        connection.setRequestProperty("charset", "utf-8");
-        connection.connect();
-        try (InputStream inputStream = connection.getInputStream()) {
+        try (InputStream inputStream = url.openStream()) {
             Files.copy(inputStream, location.toPath(), StandardCopyOption.REPLACE_EXISTING);
         }
-        connection.disconnect();
     }
 }

@@ -14,7 +14,7 @@ repositories {
 dependencies {
     implementation "org.apache.logging.log4j:log4j-api:2.8.1"
     implementation "com.google.code.gson:gson:2.8.0"
-    implementation "us.tedstar.mojang2tsrg:Mojang2Tsrg:1.0.0"
+    implementation "us.tedstar:Mojang2Tsrg:1.0.0"
     implementation "cpw.mods:modlauncher:4.2.0"
     implementation "org.spongepowered:mixin:0.8"
 }
