@@ -236,7 +236,7 @@ public class MainStart {
                 // Install Minecraft to maven
                 logger.info("Installing minecraft");
                 try {
-                    Process p = Runtime.getRuntime().exec(baseInstallCommand + "install", null, Constants.SERVER_DEV_PATH.toFile());
+                    Process p = Runtime.getRuntime().exec(baseInstallCommand + "install --info", null, Constants.SERVER_DEV_PATH.toFile());
                     String line;
                     BufferedReader input = new BufferedReader(new InputStreamReader(p.getInputStream()));
                     while ((line = input.readLine()) != null) {
