@@ -192,9 +192,9 @@ public class MainStart {
                 logger.info("Dev mode started");
                 // Create base command
                 String platform = System.getProperty("os.name").toLowerCase();
-                String baseInstallCommand = "./gradlew --no-daemon ";
-                if (platform.contains("win")) baseInstallCommand = "cmd.exe /c gradlew.bat --no-daemon ";
-                else if (platform.contains("mac")) baseInstallCommand = "/bin/sh -c ./gradlew --no-daemon ";
+                String baseInstallCommand = "./gradlew ";
+                if (platform.contains("win")) baseInstallCommand = "cmd.exe /c gradlew.bat ";
+                else if (platform.contains("mac")) baseInstallCommand = "/bin/sh -c ./gradlew ";
                 // Extract dev folder
                 if (Constants.DEV_PATH.toFile().exists()) {
                     // Make sure we have the correct directories
