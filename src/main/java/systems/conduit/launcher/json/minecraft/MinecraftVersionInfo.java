@@ -2,8 +2,8 @@ package systems.conduit.launcher.json.minecraft;
 
 import lombok.Getter;
 
-public class JsonMinecraft {
+public class MinecraftVersionInfo {
 
-    @Getter private String version = "";
+    @Getter private String url = "";
 
 }

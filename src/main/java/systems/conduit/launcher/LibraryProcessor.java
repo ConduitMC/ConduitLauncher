@@ -1,7 +1,7 @@
 package systems.conduit.launcher;
 
 import org.apache.logging.log4j.LogManager;
-import systems.conduit.launcher.json.download.JsonDownloadType;
+import systems.conduit.launcher.json.download.JsonLibraryInfo;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -12,10 +12,13 @@ import java.util.List;
 
 public class LibraryProcessor {
 
-    public static void downloadLibrary(String type, boolean firstLaunch, List<JsonDownloadType> libraries) {
+    private static ArrayList<String> loadedArtifacts = new ArrayList<>();
+
+    public static void downloadLibrary(String type, boolean firstLaunch, List<JsonLibraryInfo> libraries) {
         info(firstLaunch, "Loading " + type);
         List<String> loadedLibraries = new ArrayList<>();
-        for (JsonDownloadType library : libraries) {
+        for (JsonLibraryInfo library : libraries) {
+            if (loadedArtifacts.contains(library.getGroupId() + ":" + library.getArtifactId())) continue;
             File libraryPath = new File(Constants.LIBRARIES_PATH.toFile() + File.separator + getPath(library));
             try {
                 Files.createDirectories(libraryPath.toPath());
@@ -30,6 +33,7 @@ public class LibraryProcessor {
                     }
                 }
                 loadedLibraries.add(library.getArtifactId());
+                loadedArtifacts.add(library.getGroupId() + ":" + library.getArtifactId());
                 Agent.addClassPath(jar);
             } catch (Exception e) {
                 error(firstLaunch, "Error loading " + type + ": " + library.getArtifactId());
@@ -41,17 +45,17 @@ public class LibraryProcessor {
         if (!loadedLibraries.isEmpty()) LogManager.getLogger(Constants.LOGGER_NAME).info("Loaded " + type + ": " + loadedLibraries);
     }
 
-    private static URL getUrl(JsonDownloadType library) throws MalformedURLException {
+    private static URL getUrl(JsonLibraryInfo library) throws MalformedURLException {
         String repo = Constants.DEFAULT_REPO;
         if (library.getUrl() != null && !library.getUrl().trim().isEmpty()) repo = library.getUrl().trim();
         return new URL((repo.endsWith("/") ? repo : repo + "/") + getPath(library) + getFileName(library));
     }
 
-    private static String getFileName(JsonDownloadType library) {
+    private static String getFileName(JsonLibraryInfo library) {
         return library.getArtifactId() + "-" + library.getVersion() + ".jar";
     }
 
-    private static String getPath(JsonDownloadType library) {
+    private static String getPath(JsonLibraryInfo library) {
         return library.getGroupId().replaceAll("\\.", "/") + "/" + library.getArtifactId() + "/" + library.getVersion() + "/";
     }
 

@@ -1,15 +1,10 @@
 package systems.conduit.launcher.json.mixins;
 
+import lombok.Getter;
+
 public class JsonMixin {
 
-    private String name = "";
-    private String url = "";
+    @Getter private String name = "";
+    @Getter private String url = "";
 
-    public String getName() {
-        return name;
-    }
-
-    public String getUrl() {
-        return url;
-    }
 }
