@@ -32,7 +32,7 @@ public class Constants {
 
     public static final String VERSION_MANIFEST_ENDPOINT = "https://launchermeta.mojang.com/mc/game/version_manifest.json";
     public static final String MINECRAFT_REPO = "https://libraries.minecraft.net/";
-    public static final String DEFAULT_REPO = "https://repo.maven.apache.org/maven2/";
+    public static final String DEFAULT_REPO = "https://jcenter.bintray.com/";
 
     public static final String USER_AGENT = "Mozilla/5.0";
 
