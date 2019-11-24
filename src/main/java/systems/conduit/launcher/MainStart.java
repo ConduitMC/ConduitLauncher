@@ -33,7 +33,8 @@ import java.util.zip.ZipEntry;
 
 public class MainStart {
 
-    public static final List<Map.Entry<String, Path>> MIXINS = new ArrayList<>();
+    public static final List<String> MIXINS = new ArrayList<>();
+    public static final List<Path> PATHS = new ArrayList<>();
 
     public static void main(String[] args) {
         System.setProperty("http.agent", Constants.USER_AGENT);
@@ -279,7 +280,7 @@ public class MainStart {
         }
         // Load Minecraft
         logger.info("Loading Minecraft remapped");
-        Agent.addClassPath(Constants.SERVER_MAPPED_JAR_PATH.toFile());
+        PATHS.add(Constants.SERVER_MAPPED_JAR_PATH.toFile().toPath());
         logger.info("Loaded Minecraft remapped");
         // Load mixins json
         JsonMixins mixins = new JsonMixins();
@@ -334,12 +335,10 @@ public class MainStart {
                     // Find all mixins for a jar.
                     List<String> mixinsJson = findMixinEntry(jarFile);
                     if (!mixinsJson.isEmpty()) {
-                        for (String mixin : mixinsJson) {
-                            MIXINS.add(new AbstractMap.SimpleImmutableEntry<>(mixin, file.toPath()));
-                        }
+                        MIXINS.addAll(mixinsJson);
                     }
                     // Add to class loader
-                    Agent.addClassPath(file);
+                    PATHS.add(file.toPath());
                 } catch (IOException e) {
                     logger.fatal("Error loading mixin (" + properFileName + ")");
                     e.printStackTrace();
