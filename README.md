@@ -2,4 +2,6 @@
 
 ConduitLauncher is the launcher for Conduit, the next-generation Minecraft plugin system.
 
-Stay tuned for more information.
+## Deprecated
+
+Going forward ConduitLauncher will be replaced with a gradle development plugin and launcher hybrid. You can continue to use this launcher but be warned that you should not depend on it.
